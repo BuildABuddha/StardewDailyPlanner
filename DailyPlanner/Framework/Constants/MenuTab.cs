@@ -1,18 +1,18 @@
 ﻿namespace DailyPlanner.Framework.Constants
 {
-    /// <summary>A tab in the cheat menu.</summary>
+    /// <summary>A tab in the daily planner menu.</summary>
     internal enum MenuTab
     {
-        /// <summary>The 'player &amp; tools' tab.</summary>
+        /// <summary>The 'Daily' tab.</summary>
         Daily,
 
-        /// <summary>The 'farm &amp; fishing' tab.</summary>
+        /// <summary>The 'Weekly' tab.</summary>
         Weekly,
 
-        /// <summary>The 'skills' tab.</summary>
+        /// <summary>The 'Monthly' tab.</summary>
         Monthly,
 
-        /// <summary>The 'weather' tab.</summary>
+        /// <summary>The 'Add' tab.</summary>
         Add
     }
 }

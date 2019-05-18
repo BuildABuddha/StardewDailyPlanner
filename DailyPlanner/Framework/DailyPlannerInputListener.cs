@@ -11,7 +11,7 @@ namespace DailyPlanner.Framework
         /*********
         ** Fields
         *********/
-        /// <summary>The cheats helper.</summary>
+        /// <summary>The Planner helper.</summary>
         private readonly Planner Planner;
 
         /// <summary>The source rectangle for the 'set' button sprite.</summary>
