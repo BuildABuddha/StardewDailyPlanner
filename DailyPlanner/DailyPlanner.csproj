@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\CheckList.cs" />
     <Compile Include="Framework\Constants\MenuTab.cs" />
     <Compile Include="Framework\DailyPlannerInputListener.cs" />
     <Compile Include="Framework\ModConfig.cs" />

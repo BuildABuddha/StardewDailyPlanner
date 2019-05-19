@@ -22,6 +22,9 @@ namespace DailyPlanner.Framework
         /// <summary>The planner helper.</summary>
         private readonly Planner Planner;
 
+        /// <summary>The checklist helper.</summary>
+        private readonly CheckList CheckList;
+
         /// <summary>Provides translations for the mod.</summary>
         private readonly ITranslationHelper TranslationHelper;
 
@@ -52,6 +55,7 @@ namespace DailyPlanner.Framework
             this.Config = config;
             this.Planner = planner;
             this.TranslationHelper = i18n;
+            this.CheckList = new CheckList();
 
             this.Title = new ClickableComponent(new Rectangle(this.xPositionOnScreen + this.width / 2, this.yPositionOnScreen, Game1.tileSize * 4, Game1.tileSize), i18n.Get("title"));
             this.CurrentTab = tabIndex;
@@ -63,6 +67,7 @@ namespace DailyPlanner.Framework
                 int labelHeight = (int)(Game1.tileSize * 0.9F);
 
                 this.Tabs.Add(new ClickableComponent(new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Daily.ToString(), i18n.Get("tabs.daily")));
+                this.Tabs.Add(new ClickableComponent(new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Checklist.ToString(), i18n.Get("tabs.checklist")));
                 this.Tabs.Add(new ClickableComponent(new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Weekly.ToString(), i18n.Get("tabs.weekly")));
                 this.Tabs.Add(new ClickableComponent(new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Monthly.ToString(), i18n.Get("tabs.monthly")));
                 this.Tabs.Add(new ClickableComponent(new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Add.ToString(), i18n.Get("tabs.add")));
@@ -81,23 +86,32 @@ namespace DailyPlanner.Framework
                 case MenuTab.Daily:
                     this.Options.Add(new OptionsElement(Game1.Date.ToString() + ":"));
                     //this.Options.Add(new OptionsElement(this.Planner.ToString()));
-                    foreach (string task in planner.GetDailyPlan())
+                    foreach (string task in this.Planner.GetDailyPlan())
                     {
-                        //this.Options.Add(new OptionsElement(task));
                         this.Options.Add(new DailyPlannerInputListener(task, slotWidth, this.Planner, this));
                     }
                     break;
 
+                case MenuTab.Checklist:
+                    // TODO: Add checklist tab
+                    foreach (string task in this.CheckList.GetCheckListItems())
+                    {
+                        this.Options.Add(new DailyPlannerInputListener(task, slotWidth, this.CheckList, this));
+                    }
+                    break;
+
                 case MenuTab.Weekly:
-                    // TODO: Create "Weekly" Tab
-                    this.Options.Add(new OptionsElement("A weekly view will"));
-                    this.Options.Add(new OptionsElement("come in a future update!"));
+                    foreach (string line in this.Planner.CreateWeekList())
+                    {
+                        this.Options.Add(new OptionsElement(line));
+                    }
                     break;
 
                 case MenuTab.Monthly:
-                    // TODO: Create "Monthly" Tab
-                    this.Options.Add(new OptionsElement("A monthly view will"));
-                    this.Options.Add(new OptionsElement("come in a future update!"));
+                    foreach (string line in this.Planner.CreateMonthList())
+                    {
+                        this.Options.Add(new OptionsElement(line));
+                    }
                     break;
 
                 case MenuTab.Add:
