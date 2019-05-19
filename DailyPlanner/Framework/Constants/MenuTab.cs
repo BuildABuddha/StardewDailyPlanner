@@ -6,6 +6,9 @@
         /// <summary>The 'Daily' tab.</summary>
         Daily,
 
+        /// <summary>The 'Checklist' tab.</summary>
+        Checklist,
+
         /// <summary>The 'Weekly' tab.</summary>
         Weekly,
 

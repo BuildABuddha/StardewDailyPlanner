@@ -22,7 +22,7 @@ namespace DailyPlanner.Framework
             {
                 File.Copy(Path.Combine("Mods", "DailyPlanner", "Plans", "Template.csv"), Path.Combine("Mods", "DailyPlanner", "Plans", this.Filename));
                 this.Reader = new StreamReader(File.OpenRead(Path.Combine("Mods", "DailyPlanner", "Plans", this.Filename)));
-            }
+            } 
             
             this.data = new List<List<string>>();
 
@@ -51,7 +51,6 @@ namespace DailyPlanner.Framework
             int day = Game1.Date.DayOfMonth;
 
             if (day <= 0) { day = 1; }
-
             if (day >= 29) { day = 28; }
 
             int SeasonRow = (season - 1) * 29 + 1;
@@ -72,6 +71,78 @@ namespace DailyPlanner.Framework
         public void CompleteTask(string task)
         {
             this.DailyPlan.Remove(task);
+        }
+
+        private List<string> GetTasksForDay(int season, int day)
+        {
+            List<string> ReturnList = new List<string>();
+
+            switch (season) {
+                case 1:  // Spring
+                    ReturnList.Add("Spring");
+                    break;
+                case 2:  // Summer
+                    ReturnList.Add("Summer");
+                    break;
+                case 3:  //  Fall
+                    ReturnList.Add("Fall");
+                    break;
+                case 4:  //  Winter
+                    ReturnList.Add("Winter");
+                    break;
+                default:  // Season out of bounds
+                    return ReturnList;
+            }
+
+            ReturnList[0] = ReturnList[0] + " " + day.ToString() + ":";
+            int DayRow = (season - 1) * 29 + 1 + day;
+            ReturnList.AddRange(data[DayRow]);
+
+            return ReturnList;
+        }
+
+        public List<string> CreateWeekList()
+        {
+            int season = Game1.Date.SeasonIndex + 1;
+            int day = Game1.Date.DayOfMonth;
+
+            if (day <= 0) { day = 1; }
+            if (day >= 29) { day = 28; }
+
+            List<string> ReturnList = new List<string>();
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (season < 5)
+                {
+                    ReturnList.AddRange(this.GetTasksForDay(season, day));
+                    ReturnList.Add(" ");  // Blank line
+
+                    day++;
+                    if (day == 29)
+                    {
+                        day = 1;
+                        season++;
+                    }
+                }
+            }
+
+            return ReturnList;
+        }
+
+        public List<string> CreateMonthList()
+        {
+            int season = Game1.Date.SeasonIndex + 1;
+
+            List<string> ReturnList = new List<string>();
+
+            for (int day = 1; day <= 28; day++)
+            {
+                ReturnList.AddRange(this.GetTasksForDay(season, day));
+                ReturnList.Add(" ");  // Blank line
+            }
+
+            return ReturnList;
         }
     }
 }

@@ -4,6 +4,7 @@
 
   // menu tabs
   "tabs.daily": "Day",
+  "tabs.checklist": "Checklist",
   "tabs.weekly": "Week",
   "tabs.monthly": "Month",
   "tabs.add": "Add Task"

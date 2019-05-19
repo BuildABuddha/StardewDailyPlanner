@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\CheckList.cs" />
     <Compile Include="Framework\Constants\MenuTab.cs" />
     <Compile Include="Framework\DailyPlannerInputListener.cs" />
     <Compile Include="Framework\ModConfig.cs" />
@@ -85,6 +86,9 @@
     <Analyzer Include="..\packages\Pathoschild.Stardew.ModBuildConfig.2.2.0\analyzers\dotnet\cs\StardewModdingAPI.ModBuildConfig.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Plans\Checklist.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="README.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

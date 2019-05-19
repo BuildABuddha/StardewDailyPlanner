@@ -14,11 +14,15 @@ namespace DailyPlanner.Framework
         /// <summary>The Planner helper.</summary>
         private readonly Planner Planner;
 
+        /// <summary>The CheckList helper.</summary>
+        private readonly CheckList CheckList;
+
         /// <summary>The source rectangle for the 'set' button sprite.</summary>
         private readonly Rectangle SetButtonSprite = new Rectangle(294, 428, 21, 11);
         private readonly List<string> ButtonNames = new List<string>();
         private readonly string ListenerMessage;
         private readonly bool Listening;
+        private readonly bool IsCheckListButton;
         private Rectangle SetButtonBounds;
 
         /// <summary>The original menu, so it can be refreshed.</summary>
@@ -39,13 +43,27 @@ namespace DailyPlanner.Framework
             this.PlannerMenu = plannermenu;
         }
 
+        public DailyPlannerInputListener(string label, int slotWidth, CheckList checkList, PlannerMenu plannermenu)
+          : base(label, -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
+        {
+            this.SetButtonBounds = new Rectangle(slotWidth - 28 * Game1.pixelZoom, -1 + Game1.pixelZoom * 3, 21 * Game1.pixelZoom, 11 * Game1.pixelZoom);
+            this.CheckList = checkList;
+            this.PlannerMenu = plannermenu;
+            this.IsCheckListButton = true;
+        }
+
         public override void receiveLeftClick(int x, int y)
         {
             if (this.greyedOut ||!this.SetButtonBounds.Contains(x, y))
             {
                 return;
             }
-                
+            else if (this.IsCheckListButton)
+            {
+                this.CheckList.CompleteTask(label);
+                Game1.activeClickableMenu = new PlannerMenu(PlannerMenu);
+                Game1.soundBank.PlayCue("achievement");
+            }
             else
             {
                 this.Planner.CompleteTask(label);
@@ -53,8 +71,6 @@ namespace DailyPlanner.Framework
                 Game1.soundBank.PlayCue("achievement");
                 return;
             }
-            
-
         }
 
         public override void draw(SpriteBatch spriteBatch, int slotX, int slotY)

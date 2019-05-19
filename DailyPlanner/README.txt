@@ -11,7 +11,8 @@ How to create a plan:
 1) In your Stardew Valley/Mods/DailyPlanner/Plans folder, and find the "Template.CSV" file.
 2) From here, you can either...
 	a) Create a copy of this file in the same folder, making sure NOT to delete or rename the original file. (Recommended)
-	b) Create a blank file with the .CSV extention in this folder, and copy the Template.CSV content into it with a text editor or spreadsheet program.
+﻿	b) Open your game and load a save file for the year you want to plan. The mod will notice the .csv file is missing, and create a blank one from the template.
+	c) Create a blank file with the .CSV extension in this folder, and copy the Template.CSV content into it with a text editor or spreadsheet program.
 3) Rename the newly created copy file to whatever year you are making a plan for. For example, if planning for year 1, rename it "1.csv". 
 4) Open the file with the spreadsheet program of your choice. 
 5) To the right of the "Daily - Year" cell, fill in a row of tasks you want to be reminded of every day for the entire year.
