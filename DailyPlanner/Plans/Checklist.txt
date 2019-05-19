@@ -1,2 +1,0 @@
-﻿Find DailyPlanner/Plans/Checklist.txt.
-Add something to your Checklist.txt file!

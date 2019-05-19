@@ -14,9 +14,18 @@ namespace DailyPlanner.Framework
         public CheckList()
         {
             string filename = Path.Combine("Mods", "DailyPlanner", "Plans", "Checklist.txt");
-            this.CheckListItems = new List<string>(File.ReadAllLines(filename));
-            this.CheckListItems.Remove("");
-            this.CheckListItems.Remove(" ");
+            if (File.Exists(filename))
+            {
+                this.CheckListItems = new List<string>(File.ReadAllLines(filename, Encoding.UTF8));
+                this.CheckListItems.Remove("");
+                this.CheckListItems.Remove(" ");
+            } else
+            {
+                string[] list = new string[] { "Find DailyPlanner/Plans/Checklist.txt.", "Open it in notepad.", "Add your tasks.", "Open this menu agian." };
+                File.WriteAllLines(filename, list);
+            }
+             
+            
         }
 
         public List<string> GetCheckListItems()

@@ -15,6 +15,7 @@ namespace DailyPlanner.Framework
         public Planner(int year)
         {
             this.Filename = year.ToString() + ".csv";
+            bool AccessDenied = false;
             try
             {
                 this.Reader = new StreamReader(File.OpenRead(Path.Combine("Mods", "DailyPlanner", "Plans", this.Filename)));
@@ -22,7 +23,11 @@ namespace DailyPlanner.Framework
             {
                 File.Copy(Path.Combine("Mods", "DailyPlanner", "Plans", "Template.csv"), Path.Combine("Mods", "DailyPlanner", "Plans", this.Filename));
                 this.Reader = new StreamReader(File.OpenRead(Path.Combine("Mods", "DailyPlanner", "Plans", this.Filename)));
-            } 
+            } catch (IOException)
+            {
+                this.Reader = new StreamReader(File.OpenRead(Path.Combine("Mods", "DailyPlanner", "Plans", "Template.csv")));
+                AccessDenied = true;
+            }
             
             this.data = new List<List<string>>();
 
@@ -38,6 +43,14 @@ namespace DailyPlanner.Framework
             }
 
             Reader.Close();
+
+            if (AccessDenied)
+            {
+                data[0].Clear();
+                data[0].Add("Unable to access plan.");
+                data[0].Add("Please close your spreadsheet program.");
+                data[0].Add("Then, reload this save.");
+            }
         }
 
         public override string ToString()
