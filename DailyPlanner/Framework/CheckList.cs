@@ -23,8 +23,6 @@ namespace DailyPlanner.Framework
                 string[] list = new string[] { "Find DailyPlanner/Plans/Checklist.txt.", "Open it in notepad.", "Add your tasks.", "Open this menu agian." };
                 File.WriteAllLines(filename, list);
             }
-             
-            
         }
 
         public List<string> GetCheckListItems()

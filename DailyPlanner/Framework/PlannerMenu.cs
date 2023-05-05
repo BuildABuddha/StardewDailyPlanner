@@ -1,13 +1,13 @@
-﻿using DailyPlanner.Framework.Constants;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using DailyPlanner.Framework.Constants;
 
 namespace DailyPlanner.Framework
 {
@@ -28,12 +28,12 @@ namespace DailyPlanner.Framework
         /// <summary>Provides translations for the mod.</summary>
         private readonly ITranslationHelper TranslationHelper;
 
-        private readonly List<ClickableComponent> OptionSlots = new List<ClickableComponent>();
-        private readonly List<OptionsElement> Options = new List<OptionsElement>();
+        private readonly List<ClickableComponent> OptionSlots = new();
+        private readonly List<OptionsElement> Options = new();
         private readonly ClickableTextureComponent UpArrow;
         private readonly ClickableTextureComponent DownArrow;
         private readonly ClickableTextureComponent Scrollbar;
-        private readonly List<ClickableComponent> Tabs = new List<ClickableComponent>();
+        private readonly List<ClickableComponent> Tabs = new();
         private readonly ClickableComponent Title;
         private const int ItemsPerPage = 10;
 
@@ -44,12 +44,27 @@ namespace DailyPlanner.Framework
         private readonly Rectangle ScrollbarRunner;
         private bool CanClose;
 
+        public bool HasSelectedTextbox;
         public readonly MenuTab CurrentTab;
+
+        public IMonitor Monitor;
+
+        private readonly List<string> WeekdayList;
+        private readonly List<string> SeasonList;
+        private readonly List<string> SeasonListWithAllYear = new() { "All Year", "Spring", "Summer", "Fall", "Winter" };
+
+        private readonly SliderComponent OnDateSeasonSlider;
+        private readonly SliderComponent OnDateDaySlider;
+        private readonly SliderComponent DailySeasonSlider;
+        private readonly SliderComponent WeeklySeasonSlider;
+        private readonly SliderComponent WeeklyDayOfWeekSlider;
+        private readonly SliderComponent RemoveTaskSeasonSlider;
+        private readonly SliderComponent RemoveTaskDaySlider;
 
         /*********
         ** Public methods
         *********/
-        public PlannerMenu(MenuTab tabIndex, ModConfig config, Planner planner, ITranslationHelper i18n)
+        public PlannerMenu(MenuTab tabIndex, ModConfig config, Planner planner, ITranslationHelper i18n, IMonitor monitor)
           : base(Game1.viewport.Width / 2 - (600 + IClickableMenu.borderWidth * 2) / 2, Game1.viewport.Height / 2 - (600 + IClickableMenu.borderWidth * 2) / 2, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2)
         {
             this.Config = config;
@@ -57,8 +72,48 @@ namespace DailyPlanner.Framework
             this.TranslationHelper = i18n;
             this.CheckList = new CheckList();
 
+            this.WeekdayList = new()
+            {
+                i18n.Get("week.monday"),
+                i18n.Get("week.tuesday"),
+                i18n.Get("week.wednesday"),
+                i18n.Get("week.thursday"),
+                i18n.Get("week.friday"),
+                i18n.Get("week.saturday"),
+                i18n.Get("week.sunday")
+            };
+
+            this.SeasonList = new()
+            {
+                i18n.Get("seasons.spring"),
+                i18n.Get("seasons.summer"),
+                i18n.Get("seasons.fall"),
+                i18n.Get("seasons.winter"),
+            };
+
+            this.SeasonListWithAllYear = new()
+            {
+                i18n.Get("seasons.all_year"),
+                i18n.Get("seasons.spring"),
+                i18n.Get("seasons.summer"),
+                i18n.Get("seasons.fall"),
+                i18n.Get("seasons.winter"),
+            };
+
             this.Title = new ClickableComponent(new Rectangle(this.xPositionOnScreen + this.width / 2, this.yPositionOnScreen, Game1.tileSize * 4, Game1.tileSize), i18n.Get("title"));
             this.CurrentTab = tabIndex;
+
+            this.Monitor = monitor;
+
+            this.HasSelectedTextbox = false;
+
+            this.OnDateSeasonSlider = new(SeasonList, i18n.Get("slider.season"), this);
+            this.OnDateDaySlider = new(1, 28, i18n.Get("slider.day"), this);
+            this.DailySeasonSlider = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
+            this.WeeklySeasonSlider = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
+            this.WeeklyDayOfWeekSlider = new(WeekdayList, i18n.Get("slider.week"), this);
+            this.RemoveTaskSeasonSlider = new(SeasonList, i18n.Get("slider.season"), this);
+            this.RemoveTaskDaySlider = new(1, 28, i18n.Get("slider.day"), this);
 
             {
                 int i = 0;
@@ -76,6 +131,8 @@ namespace DailyPlanner.Framework
                     new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Monthly.ToString(), i18n.Get("tabs.monthly")));
                 this.Tabs.Add(new ClickableComponent(
                     new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Add.ToString(), i18n.Get("tabs.add")));
+                this.Tabs.Add(new ClickableComponent(
+                    new Rectangle(labelX, labelY + labelHeight * i++, Game1.tileSize * 5, Game1.tileSize), MenuTab.Remove.ToString(), i18n.Get("tabs.remove")));
             }
 
             this.UpArrow = new ClickableTextureComponent(
@@ -111,7 +168,7 @@ namespace DailyPlanner.Framework
                 this.Scrollbar.bounds.Width,
                 this.height - Game1.tileSize * 2 - this.UpArrow.bounds.Height - Game1.pixelZoom * 2
                 );
-            for (int i = 0; i < PlannerMenu.ItemsPerPage; i++)
+            for (int i = 0; i < ItemsPerPage; i++)
                 this.OptionSlots.Add(new ClickableComponent(
                     new Rectangle(
                         this.xPositionOnScreen + Game1.tileSize / 4,
@@ -126,49 +183,99 @@ namespace DailyPlanner.Framework
             switch (this.CurrentTab)
             {
                 case MenuTab.Daily:
-                    this.Options.Add(new OptionsElement(
-                    "Year " + StardewModdingAPI.Utilities.SDate.Now().Year.ToString() + 
-                    ", " + StardewModdingAPI.Utilities.SDate.Now().Season + " " + StardewModdingAPI.Utilities.SDate.Now().Day.ToString() + 
-                    ", " + StardewModdingAPI.Utilities.SDate.Now().DayOfWeek.ToString() + ":"));
+                    string label = this.Planner.DayToString(StardewModdingAPI.Utilities.SDate.Now().SeasonIndex + 1, StardewModdingAPI.Utilities.SDate.Now().Day) + ":";
+                    this.Options.Add(new OptionsElement(label));
                     foreach (string task in this.Planner.GetDailyPlan())
                     {
-                        this.Options.Add(new DailyPlannerInputListener(task, slotWidth, this.Planner, this));
+                        this.Options.Add(new PlannerListComponent(task, slotWidth, this.Planner, this));
                     }
                     break;
 
                 case MenuTab.Checklist:
                     foreach (string task in this.CheckList.GetCheckListItems())
                     {
-                        this.Options.Add(new DailyPlannerInputListener(task, slotWidth, this.CheckList, this));
+                        this.Options.Add(new PlannerListComponent(task, slotWidth, this.CheckList, this));
                     }
                     break;
 
                 case MenuTab.Weekly:
                     foreach (string line in this.Planner.CreateWeekList())
                     {
-                        this.Options.Add(new OptionsElement(line));
+                        if (line.Last() == ':') this.Options.Add(new OptionsElement(line));
+                        else this.Options.Add(new PlannerListComponent(line, slotWidth, planner, this, false));
                     }
                     break;
 
                 case MenuTab.Monthly:
                     foreach (string line in this.Planner.CreateMonthList())
                     {
-                        this.Options.Add(new OptionsElement(line));
+                        if (line.Last() == ':')this.Options.Add(new OptionsElement(line));
+                        else this.Options.Add(new PlannerListComponent(line, slotWidth, planner, this, false));
                     }
                     break;
 
                 case MenuTab.Add:
-                    // TODO: Create "Add" Tab
-                    this.Options.Add(new OptionsElement("In-game task adding will"));
-                    this.Options.Add(new OptionsElement("come in a future update!"));
+
+                    this.Options.Add(new OptionsElement(i18n.Get("instructions.add_one_day")));
+                    this.Options.Add(OnDateSeasonSlider);
+                    this.Options.Add(OnDateDaySlider);
+                    this.Options.Add(new TextBoxComponent("On Date", slotWidth, this));
+
+                    this.Options.Add(new OptionsElement(""));
+                    this.Options.Add(new OptionsElement(i18n.Get("instructions.add_daily")));
+                    this.Options.Add(DailySeasonSlider);
+                    this.Options.Add(new TextBoxComponent("Daily", slotWidth, this));
+
+                    this.Options.Add(new OptionsElement(""));
+                    this.Options.Add(new OptionsElement(i18n.Get("instructions.add_weekly")));
+                    this.Options.Add(WeeklySeasonSlider);
+                    this.Options.Add(WeeklyDayOfWeekSlider);
+                    this.Options.Add(new TextBoxComponent("Weekly", slotWidth, this));
+                    break;
+                case MenuTab.Remove:
+                    this.Options.Add(RemoveTaskSeasonSlider);
+                    this.Options.Add(RemoveTaskDaySlider);
+                    this.RefreshRemoveTaskTab();
                     break;
             }
             this.SetScrollBarToCurrentIndex();
         }
 
+        public void RefreshRemoveTaskTab()
+        {
+            if (this.CurrentTab == MenuTab.Remove)
+            {
+                if (this.Options.Count > 2) this.Options.RemoveRange(2, this.Options.Count - 2);
+                int slotWidth = this.OptionSlots[0].bounds.Width;
+                int season = this.RemoveTaskSeasonSlider.GetOutputInt() + 1;
+                string seasonName = this.RemoveTaskSeasonSlider.GetOutputString();
+                int day = this.RemoveTaskDaySlider.GetOutputInt();
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, "Daily", day))
+                {
+                    this.Options.Add(new RemoveTaskComponent("Daily", day, line, slotWidth, this.Planner, this));
+                }
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, "Weekly", day))
+                {
+                    this.Options.Add(new RemoveTaskComponent("Weekly", day, line, slotWidth, this.Planner, this));
+                }
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, "Daily", day))
+                {
+                    this.Options.Add(new RemoveTaskComponent(season, seasonName, "Daily", day, line, slotWidth, this.Planner, this));
+                }
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, "Weekly", day))
+                {
+                    this.Options.Add(new RemoveTaskComponent(season, seasonName, "Weekly", day, line, slotWidth, this.Planner, this));
+                }
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, "On Date", day))
+                {
+                    this.Options.Add(new RemoveTaskComponent(season, seasonName, "On Date", day, line, slotWidth, this.Planner, this));
+                }
+            }
+        }
+
         /// <summary>Constructor to create a new planner menu using the variables of an old one.</summary>
         /// <param name="oldMenu"></param>
-        public PlannerMenu(PlannerMenu oldMenu) : this(oldMenu.CurrentTab, oldMenu.Config, oldMenu.Planner, oldMenu.TranslationHelper) 
+        public PlannerMenu(PlannerMenu oldMenu) : this(oldMenu.CurrentTab, oldMenu.Config, oldMenu.Planner, oldMenu.TranslationHelper, oldMenu.Monitor) 
         {
             this.CurrentItemIndex = oldMenu.CurrentItemIndex;
             this.SetScrollBarToCurrentIndex();
@@ -213,7 +320,7 @@ namespace DailyPlanner.Framework
         public override void receiveKeyPress(Keys key)
         {
             bool isExitKey = Game1.options.menuButton.Contains(new InputButton(key)) || (this.Config.OpenMenuKey.TryGetKeyboard(out Keys exitKey) && key == exitKey);
-            if (isExitKey && this.readyToClose() && this.CanClose)
+            if (isExitKey && this.readyToClose() && this.CanClose && !this.HasSelectedTextbox)
             {
                 Game1.exitActiveMenu();
                 Game1.soundBank.PlayCue("bigDeSelect");
@@ -244,8 +351,8 @@ namespace DailyPlanner.Framework
                     index = this.Tabs.Count - 1;
 
                 // open menu with new index
-                MenuTab tabID = this.GetTabID(this.Tabs[index]);
-                Game1.activeClickableMenu = new PlannerMenu(tabID, this.Config, this.Planner, this.TranslationHelper);
+                MenuTab tabID = GetTabID(this.Tabs[index]);
+                Game1.activeClickableMenu = new PlannerMenu(tabID, this.Config, this.Planner, this.TranslationHelper, this.Monitor);
             }
         }
 
@@ -312,8 +419,8 @@ namespace DailyPlanner.Framework
             {
                 if (tab.bounds.Contains(x, y))
                 {
-                    MenuTab tabID = this.GetTabID(tab);
-                    Game1.activeClickableMenu = new PlannerMenu(tabID, this.Config, this.Planner, this.TranslationHelper);
+                    MenuTab tabID = GetTabID(tab);
+                    Game1.activeClickableMenu = new PlannerMenu(tabID, this.Config, this.Planner, this.TranslationHelper, this.Monitor);
                     break;
                 }
             }
@@ -331,14 +438,38 @@ namespace DailyPlanner.Framework
             this.Scrollbar.tryHover(x, y);
         }
 
+        public void OnAddTaskButtonPressed(string buttonType, string input)
+        {
+            switch(buttonType)
+            {
+                case "On Date":
+                    this.Planner.AddTask(this.OnDateSeasonSlider.GetOutputInt() + 1, buttonType, this.OnDateDaySlider.GetOutputInt(), input);
+                    break;
+                case "Daily":
+                    this.Planner.AddTask(this.DailySeasonSlider.GetOutputInt(), buttonType, 0, input);
+                    break;
+                case "Weekly":
+                    this.Planner.AddTask(this.WeeklySeasonSlider.GetOutputInt(), buttonType, this.WeeklyDayOfWeekSlider.GetOutputInt(), input);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public override void draw(SpriteBatch spriteBatch)
         {
+            // Darken background while menu is open
             if (!Game1.options.showMenuBackground)
                 spriteBatch.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.4f);
-
+            
+            // Draw dialogue box
             Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
+            
+            // Draw title box
             DrawTextBox(this.Title.bounds.X, this.Title.bounds.Y, Game1.dialogueFont, this.Title.name, 1);
             spriteBatch.End();
+
+            // Draw option slots
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null);
             for (int index = 0; index < this.OptionSlots.Count; ++index)
             {
@@ -349,17 +480,18 @@ namespace DailyPlanner.Framework
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
             if (!GameMenu.forcePreventClose)
             {
-
+                // Draw tabs on left side of screen
                 foreach (ClickableComponent tab in this.Tabs)
                 {
-                    MenuTab tabID = this.GetTabID(tab);
+                    MenuTab tabID = GetTabID(tab);
                     DrawTextBox(tab.bounds.X + tab.bounds.Width, tab.bounds.Y, Game1.smallFont, tab.label, 2, this.CurrentTab == tabID ? 1F : 0.7F);
                 }
-
-                this.UpArrow.draw(spriteBatch);
-                this.DownArrow.draw(spriteBatch);
+                
+                // Draw scroll wheel and arrows if needed
                 if (this.Options.Count > PlannerMenu.ItemsPerPage)
                 {
+                    this.UpArrow.draw(spriteBatch);
+                    this.DownArrow.draw(spriteBatch);
                     IClickableMenu.drawTextureBox(
                         spriteBatch,
                         Game1.mouseCursors,
@@ -373,10 +505,14 @@ namespace DailyPlanner.Framework
                         false);
                     this.Scrollbar.draw(spriteBatch);
                 }
+
             }
+
+            // Draw hovertext if any
             if (this.HoverText != "")
                 IClickableMenu.drawHoverText(spriteBatch, this.HoverText, Game1.smallFont);
 
+            // Draw cursor
             if (!Game1.options.hardwareCursor)
                 spriteBatch.Draw(
                     Game1.mouseCursors,
@@ -409,7 +545,7 @@ namespace DailyPlanner.Framework
 
         /// <summary>Get the tab constant represented by a tab component.</summary>
         /// <param name="tab">The component to check.</param>
-        private MenuTab GetTabID(ClickableComponent tab)
+        private static MenuTab GetTabID(ClickableComponent tab)
         {
             if (!Enum.TryParse(tab.name, out MenuTab tabID))
                 throw new InvalidOperationException($"Couldn't parse tab name '{tab.name}'.");

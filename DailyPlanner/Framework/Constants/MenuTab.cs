@@ -16,6 +16,9 @@
         Monthly,
 
         /// <summary>The 'Add' tab.</summary>
-        Add
+        Add,
+
+        /// <summary>The 'Remove' tab.</summary>
+        Remove
     }
 }

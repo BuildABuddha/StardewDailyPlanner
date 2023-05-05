@@ -17,8 +17,6 @@ namespace DailyPlanner
 
         private Planner Planner;
 
-
-
         /*********
         ** Public methods
         *********/
@@ -31,11 +29,7 @@ namespace DailyPlanner
 
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
             helper.Events.GameLoop.DayStarted += this.OnDayStarted;
-            //helper.Events.Display.Rendered += this.OnRendered;
             helper.Events.Display.MenuChanged += this.OnMenuChanged;
-            //helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
-            //helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
-            //helper.Events.World.LocationListChanged += this.OnLocationListChanged;
         }
 
 
@@ -52,9 +46,9 @@ namespace DailyPlanner
                 return;
 
             // Open window if button is tab button
-            if ((e.Button == SButton.Tab) & (Context.IsWorldReady))
+            if ((e.Button == this.Config.OpenMenuKey) & (Context.IsWorldReady))
             {
-                Game1.activeClickableMenu = new PlannerMenu(this.Config.DefaultTab, this.Config, this.Planner, this.Helper.Translation);
+                Game1.activeClickableMenu = new PlannerMenu(this.Config.DefaultTab, this.Config, this.Planner, this.Helper.Translation, this.Monitor);
                 Game1.soundBank.PlayCue("bigSelect");
             }
                 
@@ -74,7 +68,7 @@ namespace DailyPlanner
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            this.Planner = new Planner(Game1.year, this.Helper.DirectoryPath);
+            this.Planner = new Planner(Game1.year, this.Helper.DirectoryPath, this.Helper.Translation, this.Monitor);
             this.Planner.CreateDailyPlan();
         }
 

@@ -7,5 +7,35 @@
   "tabs.checklist": "Checklist",
   "tabs.weekly": "Week",
   "tabs.monthly": "Month",
-  "tabs.add": "Add Task"
+  "tabs.add": "Add Task",
+  "tabs.remove": "Remove Task",
+
+  // season names
+  "seasons.spring": "Spring",
+  "seasons.summer": "Summer",
+  "seasons.fall": "Fall",
+  "seasons.winter": "Winter",
+  "seasons.all_year": "All Year",
+
+  // weekday names
+  "week.monday": "Monday",
+  "week.tuesday": "Tuesday",
+  "week.wednesday": "Wednesday",
+  "week.thursday": "Thursday",
+  "week.friday": "Friday",
+  "week.saturday": "Saturday",
+  "week.sunday": "Sunday",
+
+  // word for year
+  "year.year": "Year",
+
+  // slider labels
+  "slider.season": "Season",
+  "slider.week": "Day of Week",
+  "slider.day": "Day",
+
+  // instructions
+  "instructions.add_one_day": "Add task on specific date:",
+  "instructions.add_daily": "Add daily task:",
+  "instructions.add_weekly": "Add weekly task:"
 }

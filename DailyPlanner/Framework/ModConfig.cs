@@ -13,7 +13,7 @@ namespace DailyPlanner.Framework
         ** Keyboard buttons
         ****/
         /// <summary>The keyboard button which opens the menu.</summary>
-        public SButton OpenMenuKey { get; set; } = SButton.Tab;
+        public SButton OpenMenuKey { get; set; } = SButton.OemOpenBrackets;
 
         /****
         ** Menu settings
