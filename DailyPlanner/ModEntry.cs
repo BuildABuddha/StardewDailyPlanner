@@ -2,6 +2,7 @@
 using StardewModdingAPI.Events;
 using StardewValley;
 using DailyPlanner.Framework;
+using StardewModdingAPI.Utilities;
 
 namespace DailyPlanner
 {
@@ -29,7 +30,6 @@ namespace DailyPlanner
 
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
             helper.Events.GameLoop.DayStarted += this.OnDayStarted;
-            helper.Events.Display.MenuChanged += this.OnMenuChanged;
         }
 
 
@@ -52,18 +52,6 @@ namespace DailyPlanner
                 Game1.soundBank.PlayCue("bigSelect");
             }
                 
-        }
-
-        /// <summary>Raised after a game menu is opened, closed, or replaced.</summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        private void OnMenuChanged(object sender, MenuChangedEventArgs e)
-        {
-            // save config
-            if (e.OldMenu is PlannerMenu)
-            {
-                this.Helper.WriteConfig(this.Config);
-            }
         }
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
