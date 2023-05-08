@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DailyPlanner.Framework.Constants;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.Menus;
@@ -23,7 +24,7 @@ namespace DailyPlanner.Framework
         private readonly PlannerMenu PlannerMenu;
 
         private readonly int Season;
-        private readonly string Type;
+        private readonly TaskType Type;
         private readonly int Day;
         private readonly string TaskName;
 
@@ -38,8 +39,8 @@ namespace DailyPlanner.Framework
         /// <param name="slotWidth">The field width.</param>
         /// <param name="planner">The planner helper.</param>
         /// <param name="plannermenu">The PlannerMenu creating this button.</param>
-        public RemoveTaskComponent(int season, string seasonName, string type, int date, string taskName, int slotWidth, Planner planner, PlannerMenu plannermenu)
-          : base($"{type}, {seasonName} {date}: {taskName}", -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
+        public RemoveTaskComponent(TaskType type, int season, int date, string taskName, int slotWidth, Planner planner, PlannerMenu plannermenu)
+          : base("", -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
             this.SetButtonBounds = new Rectangle(slotWidth - 18 * Game1.pixelZoom, -1 + Game1.pixelZoom * 3, 11 * Game1.pixelZoom, 11 * Game1.pixelZoom);
             this.Planner = planner;
@@ -56,8 +57,8 @@ namespace DailyPlanner.Framework
         /// <param name="taskName">The name of the task.</param>
         /// <param name="slotWidth">The field width.</param>
         /// <param name="planner">The planner helper.</param>
-        public RemoveTaskComponent(string type, int date, string taskName, int slotWidth, Planner planner, PlannerMenu plannermenu)
-          : base($"{type}, All Year: {taskName}", -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
+        public RemoveTaskComponent(TaskType type, int date, string taskName, int slotWidth, Planner planner, PlannerMenu plannermenu)
+          : base("", -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
             this.SetButtonBounds = new Rectangle(slotWidth - 18 * Game1.pixelZoom, -1 + Game1.pixelZoom * 3, 11 * Game1.pixelZoom, 11 * Game1.pixelZoom);
             this.Planner = planner;
@@ -81,11 +82,26 @@ namespace DailyPlanner.Framework
             return;
         }
 
+        private string GenerateLabel()
+        {
+            string returnString = this.Planner.TaskTypeToString(this.Type);
+            if (this.Type != TaskType.OnDate)
+            {
+                returnString += $", {this.Planner.SeasonIndexToName(this.Season)}: {this.TaskName}";
+            }
+            else
+            {
+                returnString += $": {this.TaskName}";
+            }
+
+            return returnString;
+        }
+
         public override void draw(SpriteBatch spriteBatch, int slotX, int slotY, IClickableMenu context = null)
         {
             Utility.drawTextWithShadow(
                 spriteBatch,
-                this.label.Replace("AllYear", "All Year"),
+                this.GenerateLabel(),
                 Game1.dialogueFont,
                 new Vector2(
                     this.bounds.X + slotX,

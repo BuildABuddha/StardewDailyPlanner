@@ -219,18 +219,18 @@ namespace DailyPlanner.Framework
                     this.Options.Add(new OptionsElement(i18n.Get("instructions.add_one_day")));
                     this.Options.Add(OnDateSeasonSlider);
                     this.Options.Add(OnDateDaySlider);
-                    this.Options.Add(new TextBoxComponent("On Date", slotWidth, this));
+                    this.Options.Add(new TextBoxComponent(TaskType.OnDate, slotWidth, this));
 
                     this.Options.Add(new OptionsElement(""));
                     this.Options.Add(new OptionsElement(i18n.Get("instructions.add_daily")));
                     this.Options.Add(DailySeasonSlider);
-                    this.Options.Add(new TextBoxComponent("Daily", slotWidth, this));
+                    this.Options.Add(new TextBoxComponent(TaskType.Daily, slotWidth, this));
 
                     this.Options.Add(new OptionsElement(""));
                     this.Options.Add(new OptionsElement(i18n.Get("instructions.add_weekly")));
                     this.Options.Add(WeeklySeasonSlider);
                     this.Options.Add(WeeklyDayOfWeekSlider);
-                    this.Options.Add(new TextBoxComponent("Weekly", slotWidth, this));
+                    this.Options.Add(new TextBoxComponent(TaskType.Weekly, slotWidth, this));
                     break;
                 case MenuTab.Remove:
                     this.Options.Add(RemoveTaskSeasonSlider);
@@ -248,27 +248,26 @@ namespace DailyPlanner.Framework
                 if (this.Options.Count > 2) this.Options.RemoveRange(2, this.Options.Count - 2);
                 int slotWidth = this.OptionSlots[0].bounds.Width;
                 int season = this.RemoveTaskSeasonSlider.GetOutputInt() + 1;
-                string seasonName = this.RemoveTaskSeasonSlider.GetOutputString();
                 int day = this.RemoveTaskDaySlider.GetOutputInt();
-                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, "Daily", day))
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, TaskType.Daily, day))
                 {
-                    this.Options.Add(new RemoveTaskComponent("Daily", day, line, slotWidth, this.Planner, this));
+                    this.Options.Add(new RemoveTaskComponent(TaskType.Daily, day, line, slotWidth, this.Planner, this));
                 }
-                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, "Weekly", day))
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, TaskType.Weekly, day))
                 {
-                    this.Options.Add(new RemoveTaskComponent("Weekly", day, line, slotWidth, this.Planner, this));
+                    this.Options.Add(new RemoveTaskComponent(TaskType.Weekly, day, line, slotWidth, this.Planner, this));
                 }
-                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, "Daily", day))
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, TaskType.Daily, day))
                 {
-                    this.Options.Add(new RemoveTaskComponent(season, seasonName, "Daily", day, line, slotWidth, this.Planner, this));
+                    this.Options.Add(new RemoveTaskComponent(TaskType.Daily, season, day, line, slotWidth, this.Planner, this));
                 }
-                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, "Weekly", day))
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, TaskType.Weekly, day))
                 {
-                    this.Options.Add(new RemoveTaskComponent(season, seasonName, "Weekly", day, line, slotWidth, this.Planner, this));
+                    this.Options.Add(new RemoveTaskComponent(TaskType.Weekly, day, season, line, slotWidth, this.Planner, this));
                 }
-                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, "On Date", day))
+                foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, TaskType.OnDate, day))
                 {
-                    this.Options.Add(new RemoveTaskComponent(season, seasonName, "On Date", day, line, slotWidth, this.Planner, this));
+                    this.Options.Add(new RemoveTaskComponent(TaskType.OnDate, season, day, line, slotWidth, this.Planner, this));
                 }
             }
         }
@@ -438,17 +437,17 @@ namespace DailyPlanner.Framework
             this.Scrollbar.tryHover(x, y);
         }
 
-        public void OnAddTaskButtonPressed(string buttonType, string input)
+        public void OnAddTaskButtonPressed(TaskType buttonType, string input)
         {
             switch(buttonType)
             {
-                case "On Date":
+                case TaskType.OnDate:
                     this.Planner.AddTask(this.OnDateSeasonSlider.GetOutputInt() + 1, buttonType, this.OnDateDaySlider.GetOutputInt(), input);
                     break;
-                case "Daily":
+                case TaskType.Daily:
                     this.Planner.AddTask(this.DailySeasonSlider.GetOutputInt(), buttonType, 0, input);
                     break;
-                case "Weekly":
+                case TaskType.Weekly:
                     this.Planner.AddTask(this.WeeklySeasonSlider.GetOutputInt(), buttonType, this.WeeklyDayOfWeekSlider.GetOutputInt(), input);
                     break;
                 default:

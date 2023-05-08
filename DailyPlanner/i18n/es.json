@@ -34,6 +34,11 @@
   "slider.week": "Día de la semana",
   "slider.day": "Día",
 
+  // task types
+  "task.daily": "A diario",
+  "task.weekly": "Semanalmente",
+  "task.on_date": "A tiempo",
+
   // instructions
   "instructions.add_one_day": "Agregar tarea en una fecha específica:",
   "instructions.add_daily": "Agregar tarea diaria:",

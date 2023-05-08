@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
+using DailyPlanner.Framework.Constants;
 
 namespace DailyPlanner.Framework
 {
@@ -32,7 +33,7 @@ namespace DailyPlanner.Framework
         /// <summary>Area on the screen that the button occupies. Used to check if we click on it.</summary>
         private Rectangle SetButtonBounds;
 
-        private readonly string ButtonType;
+        private readonly TaskType ButtonType;
 
         /*********
         ** Public methods
@@ -41,13 +42,15 @@ namespace DailyPlanner.Framework
         /// <param name="buttonType">The type of button.</param>
         /// <param name="slotWidth">The field width.</param>
         /// <param name="plannermenu">The PlannerMenu creating this button.</param>
-        public TextBoxComponent(string buttonType, int slotWidth, PlannerMenu plannermenu)
+        public TextBoxComponent(TaskType buttonType, int slotWidth, PlannerMenu plannermenu)
           : base("", -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
             this.PlannerMenu = plannermenu;
-            this.InputBox = new(Game1.content.Load<Texture2D>("LooseSprites\\textBox"), null, Game1.smallFont, Color.Black);
-            this.InputBox.TitleText = label;
-            this.InputBox.Text = label;
+            this.InputBox = new(Game1.content.Load<Texture2D>("LooseSprites\\textBox"), null, Game1.smallFont, Color.Black)
+            {
+                TitleText = label,
+                Text = label
+            };
             this.SetButtonBounds = new Rectangle(slotWidth - 28 * Game1.pixelZoom, -1 + Game1.pixelZoom * 3, 21 * Game1.pixelZoom, 11 * Game1.pixelZoom);
             this.ButtonType = buttonType;
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using DailyPlanner.Framework.Constants;
 using StardewModdingAPI;
 
 namespace DailyPlanner.Framework
@@ -127,7 +128,7 @@ namespace DailyPlanner.Framework
             return returnList;
         }
 
-        public List<string> GetTasksBySeasonTypeAndDate(int season, string type, int day = 0)
+        public List<string> GetTasksBySeasonTypeAndDate(int season, TaskType type, int day = 0)
         {
             if (day <= 0) { day = 1; }
             if (day >= 29) { day = 28; }
@@ -142,11 +143,11 @@ namespace DailyPlanner.Framework
                 _ => new(),
             };
 
-            if (season == 0 && type == "Daily") return new(this.Data.AllYear.Daily);
-            else if (season == 0 && type == "Weekly") return new(this.Data.AllYear.Weekly[dayOfWeekIndex]);
-            else if (type == "Daily") return new(PlanMonthData.Daily);
-            else if (type == "Weekly") return new(PlanMonthData.Weekly[dayOfWeekIndex]);
-            else if (type == "On Date") return new(PlanMonthData.OnDate[day - 1]);
+            if (season == 0 && type == TaskType.Daily) return new(this.Data.AllYear.Daily);
+            else if (season == 0 && type == TaskType.Weekly) return new(this.Data.AllYear.Weekly[dayOfWeekIndex]);
+            else if (type == TaskType.Daily) return new(PlanMonthData.Daily);
+            else if (type == TaskType.Weekly) return new(PlanMonthData.Weekly[dayOfWeekIndex]);
+            else if (type == TaskType.OnDate) return new(PlanMonthData.OnDate[day - 1]);
             else return new();
         }
 
@@ -192,13 +193,13 @@ namespace DailyPlanner.Framework
             return ReturnList;
         }
 
-        public void AddTask(int season, string type, int day, string taskName)
+        public void AddTask(int season, TaskType type, int day, string taskName)
         {
             PlannerData TempData;
 
             int dayOfWeekIndex;
 
-            if (type == "Weekly") dayOfWeekIndex = day;
+            if (type == TaskType.Weekly) dayOfWeekIndex = day;
             else dayOfWeekIndex = -1;
 
             if (day <= 0) { day = 1; }
@@ -229,12 +230,12 @@ namespace DailyPlanner.Framework
 
                 switch (type)
                 {
-                    case "Daily":
+                    case TaskType.Daily:
                         TempAllYearData.Daily.Add(taskName);
                         PlanAllYearData.Daily.Add(taskName);
                         this.DailyPlan.Add(taskName);
                         break;
-                    case "Weekly":
+                    case TaskType.Weekly:
                         TempData.AllYear.Weekly[dayOfWeekIndex].Add(taskName);
                         PlanAllYearData.Weekly[dayOfWeekIndex].Add(taskName);
                         if (isSameDayOfWeek) this.DailyPlan.Add(taskName);
@@ -265,17 +266,17 @@ namespace DailyPlanner.Framework
 
                 switch (type)
                 {
-                    case "Daily":
+                    case TaskType.Daily:
                         TempMonthData.Daily.Add(taskName);
                         PlanMonthData.Daily.Add(taskName);
                         if (isSameSeason) this.DailyPlan.Add(taskName);
                         break;
-                    case "Weekly":
+                    case TaskType.Weekly:
                         TempMonthData.Weekly[dayOfWeekIndex].Add(taskName);
                         PlanMonthData.Weekly[dayOfWeekIndex].Add(taskName);
                         if (isSameDayOfWeek && isSameSeason) this.DailyPlan.Add(taskName);
                         break;
-                    case "On Date":
+                    case TaskType.OnDate:
                         TempMonthData.OnDate[day - 1].Add(taskName);
                         PlanMonthData.OnDate[day - 1].Add(taskName);
                         if (isToday) this.DailyPlan.Add(taskName);
@@ -290,7 +291,7 @@ namespace DailyPlanner.Framework
             File.WriteAllText(Path.Combine(this.Filepath, "Plans", this.Filename), jsonString);
         }
 
-        public void RemoveTask(int season, string type, int day, string taskName)
+        public void RemoveTask(int season, TaskType type, int day, string taskName)
         {
             PlannerData TempData;
 
@@ -323,14 +324,14 @@ namespace DailyPlanner.Framework
                 PlannerData.AllYearData TempAllYearData = TempData.AllYear;
                 PlannerData.AllYearData PlanAllYearData = this.Data.AllYear;
 
-                switch (type.ToLower())
+                switch (type)
                 {
-                    case "daily":
+                    case TaskType.Daily:
                         TempAllYearData.Daily.Remove(taskName);
                         PlanAllYearData.Daily.Remove(taskName);
                         this.DailyPlan.Remove(taskName);
                         break;
-                    case "weekly":
+                    case TaskType.Weekly:
                         TempData.AllYear.Weekly[dayOfWeekIndex].Remove(taskName);
                         PlanAllYearData.Weekly[dayOfWeekIndex].Remove(taskName);
                         if (isSameDayOfWeek) this.DailyPlan.Remove(taskName);
@@ -359,19 +360,19 @@ namespace DailyPlanner.Framework
                     _ => new(),
                 };
 
-                switch (type.ToLower())
+                switch (type)
                 {
-                    case "daily":
+                    case TaskType.Daily:
                         TempMonthData.Daily.Remove(taskName);
                         PlanMonthData.Daily.Remove(taskName);
                         if (isSameSeason) this.DailyPlan.Remove(taskName);
                         break;
-                    case "weekly":
+                    case TaskType.Weekly:
                         TempMonthData.Weekly[dayOfWeekIndex].Remove(taskName);
                         PlanMonthData.Weekly[dayOfWeekIndex].Remove(taskName);
                         if (isSameDayOfWeek && isSameSeason) this.DailyPlan.Remove(taskName);
                         break;
-                    case "on date":
+                    case TaskType.OnDate:
                         TempMonthData.OnDate[day - 1].Remove(taskName);
                         PlanMonthData.OnDate[day - 1].Remove(taskName);
                         if (isToday) this.DailyPlan.Remove(taskName);
@@ -386,19 +387,29 @@ namespace DailyPlanner.Framework
             File.WriteAllText(Path.Combine(this.Filepath, "Plans", this.Filename), jsonString);
         }
 
-        private static int DayToDayOfWeekIndex(int day)
+        public static int DayToDayOfWeekIndex(int day)
         {
             int DayOfWeekIndex = day % 7;
             if (DayOfWeekIndex == 0) DayOfWeekIndex = 7;
             return DayOfWeekIndex -1;
         }
 
-        public string DayToString(int seasonIndex, int day)
+        public string SeasonIndexToName(int seasonIndex)
         {
-            if (day <= 0) { day = 1; }
-            if (day >= 29) { day = 28; }
+            return (seasonIndex) switch
+            {
+                0 => this.TranslationHelper.Get("seasons.all_year"),
+                1 => this.TranslationHelper.Get("seasons.spring"),
+                2 => this.TranslationHelper.Get("seasons.summer"),
+                3 => this.TranslationHelper.Get("seasons.fall"),
+                4 => this.TranslationHelper.Get("seasons.winter"),
+                _ => "",
+            };
+        }
 
-            string weekday = (DayToDayOfWeekIndex(day)) switch
+        public string DayToDayOfWeekName(int day)
+        {
+            return (DayToDayOfWeekIndex(day)) switch
             {
                 0 => this.TranslationHelper.Get("week.monday"),
                 1 => this.TranslationHelper.Get("week.tuesday"),
@@ -409,18 +420,25 @@ namespace DailyPlanner.Framework
                 6 => this.TranslationHelper.Get("week.sunday"),
                 _ => "",
             };
+        }
 
-            string seasonName = (seasonIndex) switch
+        public string TaskTypeToString(TaskType type)
+        {
+            return (type) switch
             {
-                0 => this.TranslationHelper.Get("seasons.all_year"),
-                1 => this.TranslationHelper.Get("seasons.spring"),
-                2 => this.TranslationHelper.Get("seasons.summer"),
-                3 => this.TranslationHelper.Get("seasons.fall"),
-                4 => this.TranslationHelper.Get("seasons.winter"),
+                TaskType.Daily => this.TranslationHelper.Get("task.daily"),
+                TaskType.Weekly => this.TranslationHelper.Get("task.weekly"),
+                TaskType.OnDate => this.TranslationHelper.Get("task.on_date"),
                 _ => "",
             };
+        }
 
-            return $"{this.TranslationHelper.Get("year.year")} {this.Year}, {seasonName} {day}, {weekday}";
+        public string DayToString(int seasonIndex, int day)
+        {
+            if (day <= 0) { day = 1; }
+            if (day >= 29) { day = 28; }
+
+            return $"{this.TranslationHelper.Get("year.year")} {this.Year}, {this.SeasonIndexToName(seasonIndex)} {day}, {this.DayToDayOfWeekName(day)}";
         }
     }
 }
