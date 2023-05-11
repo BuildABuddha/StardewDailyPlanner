@@ -1,7 +1,7 @@
 ﻿namespace DailyPlanner.Framework.Constants
 {
     /// <summary>A tab in the daily planner menu.</summary>
-    internal enum TaskType
+    public enum TaskType
     {
         /// <summary>A daily task.</summary>
         Daily,

@@ -57,22 +57,24 @@ namespace DailyPlanner.Framework
 
         /// <summary>Set the search textbox selected.</summary>
         /// <param name="explicitly">Whether the textbox was selected explicitly by the user (rather than automatically by hovering), so the selection should be maintained.</param>
-        private void SelectInputBox(bool explicitly)
+        public void SelectInputBox(bool explicitly)
         {
             this.InputBox.Selected = true;
             this.IsInputBoxSelectedExplicitly = explicitly;
             this.InputBox.Width = this.InputBoxBounds.Width;
             this.PlannerMenu.HasSelectedTextbox = true;
+            this.PlannerMenu.SelectedTextBox = this;
         }
 
         /// <summary>Set the search textbox non-selected.</summary>
-        private void DeselectInputBox()
+        public void DeselectInputBox()
         {
             Game1.closeTextEntry();
 
             this.InputBox.Selected = false;
             this.IsInputBoxSelectedExplicitly = false;
             this.PlannerMenu.HasSelectedTextbox = false;
+            if (this.PlannerMenu.SelectedTextBox == this) this.PlannerMenu.SelectedTextBox = null;
         }
 
         /// <summary>Called when player left clicks on the menu.</summary>

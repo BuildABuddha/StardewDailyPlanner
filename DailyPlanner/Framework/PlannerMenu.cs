@@ -41,8 +41,9 @@ namespace DailyPlanner.Framework
         private int OptionsSlotHeld = -1;
         private int CurrentItemIndex;
         private bool IsScrolling;
-        private readonly Rectangle ScrollbarRunner;
+        private readonly Rectangle ScrollbarRunner; 
         private bool CanClose;
+        public TextBoxComponent SelectedTextBox;
 
         public bool HasSelectedTextbox;
         public readonly MenuTab CurrentTab;
@@ -71,6 +72,7 @@ namespace DailyPlanner.Framework
             this.Planner = planner;
             this.TranslationHelper = i18n;
             this.CheckList = new CheckList();
+            this.CanClose = false;
 
             this.WeekdayList = new()
             {
@@ -241,6 +243,32 @@ namespace DailyPlanner.Framework
             this.SetScrollBarToCurrentIndex();
         }
 
+        /// <summary>
+        /// Constructor to create a new planner menu using the variables of an old one. Used to refresh the view.
+        /// </summary>
+        /// <param name="oldMenu"></param>
+        public PlannerMenu(PlannerMenu oldMenu) : this(oldMenu.CurrentTab, oldMenu.Config, oldMenu.Planner, oldMenu.TranslationHelper, oldMenu.Monitor)
+        {
+            this.CurrentItemIndex = oldMenu.CurrentItemIndex;
+            this.SetScrollBarToCurrentIndex();
+            this.CanClose = true;
+        }
+
+        /// <summary>
+        /// Constructor to create a new planner menu using the variables of the old one, but switching tabs.
+        /// </summary>
+        /// <param name="oldMenu"></param>
+        /// <param name="newTab"></param>
+        public PlannerMenu(PlannerMenu oldMenu, MenuTab newTab) : this(newTab, oldMenu.Config, oldMenu.Planner, oldMenu.TranslationHelper, oldMenu.Monitor)
+        {
+            this.CurrentItemIndex = 0;
+            this.SetScrollBarToCurrentIndex();
+            this.CanClose = true;
+        }
+
+        /// <summary>
+        /// This should get called when loading the 'remove task' tab, as well as clicking on a task on that tab.
+        /// </summary>
         public void RefreshRemoveTaskTab()
         {
             if (this.CurrentTab == MenuTab.Remove)
@@ -272,25 +300,6 @@ namespace DailyPlanner.Framework
             }
         }
 
-        /// <summary>Constructor to create a new planner menu using the variables of an old one.</summary>
-        /// <param name="oldMenu"></param>
-        public PlannerMenu(PlannerMenu oldMenu) : this(oldMenu.CurrentTab, oldMenu.Config, oldMenu.Planner, oldMenu.TranslationHelper, oldMenu.Monitor) 
-        {
-            this.CurrentItemIndex = oldMenu.CurrentItemIndex;
-            this.SetScrollBarToCurrentIndex();
-        }
-
-        private void SetScrollBarToCurrentIndex()
-        {
-            if (!this.Options.Any())
-                return;
-            this.Scrollbar.bounds.Y = this.ScrollbarRunner.Height / Math.Max(1, this.Options.Count - PlannerMenu.ItemsPerPage + 1) * this.CurrentItemIndex + this.UpArrow.bounds.Bottom
-                + Game1.pixelZoom;
-            if (this.CurrentItemIndex != this.Options.Count - PlannerMenu.ItemsPerPage)
-                return;
-            this.Scrollbar.bounds.Y = this.DownArrow.bounds.Y - this.Scrollbar.bounds.Height - Game1.pixelZoom;
-        }
-
         public override void leftClickHeld(int x, int y)
         {
             if (GameMenu.forcePreventClose)
@@ -319,6 +328,7 @@ namespace DailyPlanner.Framework
         public override void receiveKeyPress(Keys key)
         {
             bool isExitKey = Game1.options.menuButton.Contains(new InputButton(key)) || (this.Config.OpenMenuKey.TryGetKeyboard(out Keys exitKey) && key == exitKey);
+
             if (isExitKey && this.readyToClose() && this.CanClose && !this.HasSelectedTextbox)
             {
                 Game1.exitActiveMenu();
@@ -326,11 +336,28 @@ namespace DailyPlanner.Framework
                 return;
             }
 
+            // If this is set to true in the constructor, the menu just closes immediately upon opening. It needs to be set to true here instead.
             this.CanClose = true;
+
+            if ((key == Keys.Enter || key == Keys.Escape) && this.HasSelectedTextbox)
+            {
+                this.SelectedTextBox?.DeselectInputBox();
+                return;
+            }
 
             if (this.OptionsSlotHeld == -1 || this.OptionsSlotHeld + this.CurrentItemIndex >= this.Options.Count)
                 return;
             this.Options[this.CurrentItemIndex + this.OptionsSlotHeld].receiveKeyPress(key);
+        }
+
+        /// <summary>Exit the menu if that's allowed for the current state.</summary>
+        public void ExitIfValid()
+        {
+            if (this.readyToClose() && !GameMenu.forcePreventClose)
+            {
+                Game1.exitActiveMenu();
+                Game1.playSound("bigDeSelect");
+            }
         }
 
         public override void receiveGamePadButton(Buttons key)
@@ -351,7 +378,7 @@ namespace DailyPlanner.Framework
 
                 // open menu with new index
                 MenuTab tabID = GetTabID(this.Tabs[index]);
-                Game1.activeClickableMenu = new PlannerMenu(tabID, this.Config, this.Planner, this.TranslationHelper, this.Monitor);
+                Game1.activeClickableMenu = new PlannerMenu(this, tabID);
             }
         }
 
@@ -419,7 +446,7 @@ namespace DailyPlanner.Framework
                 if (tab.bounds.Contains(x, y))
                 {
                     MenuTab tabID = GetTabID(tab);
-                    Game1.activeClickableMenu = new PlannerMenu(tabID, this.Config, this.Planner, this.TranslationHelper, this.Monitor);
+                    Game1.activeClickableMenu = new PlannerMenu(this, tabID);
                     break;
                 }
             }
@@ -528,6 +555,21 @@ namespace DailyPlanner.Framework
         /*********
         ** Private methods
         *********/
+        
+        /// <summary>
+        /// Sets the scrollbar's postion based on current index. 
+        /// </summary>
+        private void SetScrollBarToCurrentIndex()
+        {
+            if (!this.Options.Any())
+                return;
+            this.Scrollbar.bounds.Y = this.ScrollbarRunner.Height / Math.Max(1, this.Options.Count - PlannerMenu.ItemsPerPage + 1) * this.CurrentItemIndex + this.UpArrow.bounds.Bottom
+                + Game1.pixelZoom;
+            if (this.CurrentItemIndex != this.Options.Count - PlannerMenu.ItemsPerPage)
+                return;
+            this.Scrollbar.bounds.Y = this.DownArrow.bounds.Y - this.Scrollbar.bounds.Height - Game1.pixelZoom;
+        }
+
         private void DownArrowPressed()
         {
             this.DownArrow.scale = this.DownArrow.baseScale;

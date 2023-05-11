@@ -3,6 +3,10 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using DailyPlanner.Framework;
 using StardewModdingAPI.Utilities;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using GenericModConfigMenu;
 
 namespace DailyPlanner
 {
@@ -16,7 +20,9 @@ namespace DailyPlanner
         /// <summary>The mod settings.</summary>
         private ModConfig Config;
 
-        private Planner Planner;
+        public Planner Planner;
+
+        private PlannerOverlay Overlay;
 
         /*********
         ** Public methods
@@ -26,10 +32,12 @@ namespace DailyPlanner
         public override void Entry(IModHelper helper)
         {
             this.Config = helper.ReadConfig<ModConfig>();
-            this.Monitor.Log($"Started with menu key {this.Config.OpenMenuKey}.", LogLevel.Trace);
 
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
             helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+            helper.Events.Display.RenderingHud += this.OnRenderingHud;
+            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         }
 
 
@@ -54,11 +62,89 @@ namespace DailyPlanner
                 
         }
 
-        private void OnDayStarted(object sender, DayStartedEventArgs e)
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            this.Overlay = new PlannerOverlay(this, this.Config);
+        }
+
+            private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             this.Planner = new Planner(Game1.year, this.Helper.DirectoryPath, this.Helper.Translation, this.Monitor);
             this.Planner.CreateDailyPlan();
         }
 
+        private void OnRenderingHud(object sender, RenderingHudEventArgs e)
+        {
+            if (this.Config.ShowOverlay) this.Overlay?.Draw(e.SpriteBatch);
+        }
+
+        // TODO: Replace options menu settings with translations 
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+            // get Generic Mod Config Menu's API (if it's installed)
+            var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (configMenu is null) return;
+
+            // register mod
+            configMenu.Register(
+                mod: this.ModManifest,
+                reset: () => this.Config = new ModConfig(),
+                save: () => this.Helper.WriteConfig(this.Config));
+
+            // add keybind
+            configMenu.AddKeybind(
+                mod: ModManifest,
+                name: () => "Open menu key",
+                tooltip: () => "",
+                getValue: () => this.Config.OpenMenuKey,
+                setValue: (SButton val) => this.Config.OpenMenuKey = val);
+
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => "Show Overlay",
+                tooltip: () => "",
+                getValue: () => this.Config.ShowOverlay,
+                setValue: (bool val) => this.Config.ShowOverlay = val);
+
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "Overlay background opacity",
+                tooltip: () => "",
+                getValue: () => this.Config.OverlayBackgroundOpacity,
+                setValue: (float val) => this.Config.OverlayBackgroundOpacity = val,
+                min: 0.0F,
+                max: 1.0F,
+                interval: 0.1F);
+
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "Overlay text opacity",
+                tooltip: () => "",
+                getValue: () => this.Config.OverlayTextOpacity,
+                setValue: (float val) => this.Config.OverlayTextOpacity = val,
+                min: 0.0F,
+                max: 1.0F,
+                interval: 0.1F);
+
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "Overlay max lines",
+                tooltip: () => "",
+                getValue: () => this.Config.OverlayMaxLines,
+                setValue: (int val) => this.Config.OverlayMaxLines = val,
+                min: 1,
+                max: 25,
+                interval: 1);
+
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "Overlay max line length",
+                tooltip: () => "",
+                getValue: () => this.Config.OverlayMaxLength,
+                setValue: (int val) => this.Config.OverlayMaxLength = val,
+                min: 10,
+                max: 40,
+                interval: 1);
+        }
     }
 }

@@ -6,7 +6,7 @@ using StardewModdingAPI;
 
 namespace DailyPlanner.Framework
 {
-    class Planner
+    public class Planner
     {
         private readonly string Filename;
         private readonly string Filepath;
