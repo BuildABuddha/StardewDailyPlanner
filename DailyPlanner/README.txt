@@ -43,6 +43,8 @@ Credits:
 * Pathoschild for their work on SMAPI and the Cheat Menu Mod
 * CJBok for their work on the Cheat Menu Mod, which I ripped off to make the GUI for this mod.
 * spacechase0 for Generic Mod Config Menu
+* jltaylor1 for the To-Dew mod, which filled the void left by my mod while it was broken for years, lol
 
 Contacts:
 Discord - MevNav#0660
+Feel free to @ me in the Stardew Discord server!
