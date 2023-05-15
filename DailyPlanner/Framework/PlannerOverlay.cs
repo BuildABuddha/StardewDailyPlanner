@@ -68,6 +68,10 @@ namespace DailyPlanner.Framework
             {
                 string todaysPlan = GetFormattedList(todaysPlanList);
                 Vector2 ListHeaderSize = Game1.smallFont.MeasureString(todaysPlan);
+                offsetX = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Left;
+                offsetY = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Top;
+                offsetX = (int) Math.Floor((double)Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Right * this.Config.OverlayXBufferPercent / 100);
+                offsetY = (int) Math.Floor((double)Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom * this.Config.OverlayYBufferPercent / 100);
 
                 Rectangle effectiveBounds = new(offsetX, offsetY, (int)(ListHeaderSize.X + marginLeft + marginRight), (int)(marginTop + (ListHeaderSize.Y)) + marginBottom);
                 float topPx = effectiveBounds.Y + marginTop;

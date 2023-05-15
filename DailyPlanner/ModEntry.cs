@@ -75,7 +75,11 @@ namespace DailyPlanner
 
         private void OnRenderingHud(object sender, RenderingHudEventArgs e)
         {
-            if (this.Config.ShowOverlay) this.Overlay?.Draw(e.SpriteBatch);
+            if (this.Config.ShowOverlay 
+                && Game1.currentLocation?.currentEvent == null 
+                && Game1.farmEvent == null 
+                && !Game1.game1.takingMapScreenshot
+                ) this.Overlay?.Draw(e.SpriteBatch);
         }
 
         // TODO: Replace options menu settings with translations 
@@ -144,6 +148,26 @@ namespace DailyPlanner
                 setValue: (int val) => this.Config.OverlayMaxLength = val,
                 min: 10,
                 max: 40,
+                interval: 1);
+
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "Overlay X position %",
+                tooltip: () => "",
+                getValue: () => this.Config.OverlayXBufferPercent,
+                setValue: (int val) => this.Config.OverlayXBufferPercent = val,
+                min: 0,
+                max: 100,
+                interval: 1);
+
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "Overlay Y position %",
+                tooltip: () => "",
+                getValue: () => this.Config.OverlayYBufferPercent,
+                setValue: (int val) => this.Config.OverlayYBufferPercent = val,
+                min: 0,
+                max: 100,
                 interval: 1);
         }
     }

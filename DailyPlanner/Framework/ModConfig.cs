@@ -25,5 +25,7 @@ namespace DailyPlanner.Framework
         public float OverlayTextOpacity { get; set; } = 1.0F;
         public int OverlayMaxLength { get; set; } = 25;
         public int OverlayMaxLines { get; set; } = 10;
+        public int OverlayXBufferPercent { get; set; } = 0;
+        public int OverlayYBufferPercent { get;set; } = 0;
     }
 }
