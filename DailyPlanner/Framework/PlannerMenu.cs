@@ -65,13 +65,13 @@ namespace DailyPlanner.Framework
         /*********
         ** Public methods
         *********/
-        public PlannerMenu(MenuTab tabIndex, ModConfig config, Planner planner, ITranslationHelper i18n, IMonitor monitor)
+        public PlannerMenu(MenuTab tabIndex, ModConfig config, Planner planner, CheckList checklist, ITranslationHelper i18n, IMonitor monitor)
           : base(Game1.viewport.Width / 2 - (600 + IClickableMenu.borderWidth * 2) / 2, Game1.viewport.Height / 2 - (600 + IClickableMenu.borderWidth * 2) / 2, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2)
         {
             this.Config = config;
             this.Planner = planner;
             this.TranslationHelper = i18n;
-            this.CheckList = new CheckList();
+            this.CheckList = checklist;
             this.CanClose = false;
 
             this.WeekdayList = new()
@@ -248,7 +248,7 @@ namespace DailyPlanner.Framework
         /// Constructor to create a new planner menu using the variables of an old one. Used to refresh the view.
         /// </summary>
         /// <param name="oldMenu"></param>
-        public PlannerMenu(PlannerMenu oldMenu) : this(oldMenu.CurrentTab, oldMenu.Config, oldMenu.Planner, oldMenu.TranslationHelper, oldMenu.Monitor)
+        public PlannerMenu(PlannerMenu oldMenu) : this(oldMenu.CurrentTab, oldMenu.Config, oldMenu.Planner, oldMenu.CheckList, oldMenu.TranslationHelper, oldMenu.Monitor)
         {
             this.CurrentItemIndex = oldMenu.CurrentItemIndex;
             this.SetScrollBarToCurrentIndex();
@@ -260,7 +260,7 @@ namespace DailyPlanner.Framework
         /// </summary>
         /// <param name="oldMenu"></param>
         /// <param name="newTab"></param>
-        public PlannerMenu(PlannerMenu oldMenu, MenuTab newTab) : this(newTab, oldMenu.Config, oldMenu.Planner, oldMenu.TranslationHelper, oldMenu.Monitor)
+        public PlannerMenu(PlannerMenu oldMenu, MenuTab newTab) : this(newTab, oldMenu.Config, oldMenu.Planner, oldMenu.CheckList, oldMenu.TranslationHelper, oldMenu.Monitor)
         {
             this.CurrentItemIndex = 0;
             this.SetScrollBarToCurrentIndex();

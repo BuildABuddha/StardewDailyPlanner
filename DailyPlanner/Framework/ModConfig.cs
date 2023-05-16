@@ -21,6 +21,8 @@ namespace DailyPlanner.Framework
         /// <summary>The tab shown by default when you open the menu.</summary>
         public MenuTab DefaultTab { get; set; } = MenuTab.Daily;
         public bool ShowOverlay { get; set; } = true;
+        public bool ShowPlannerTasks { get; set; } = true;
+        public bool ShowChecklistTasks { get; set; } = false;
         public float OverlayBackgroundOpacity { get; set; } = 0.7F;
         public float OverlayTextOpacity { get; set; } = 1.0F;
         public int OverlayMaxLength { get; set; } = 25;

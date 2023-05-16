@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DailyPlanner.Framework
 {
-    class CheckList
+    public class CheckList
     {
         /// <summary>List of items on the checklist.</summary>
         private readonly List<string> CheckListItems;

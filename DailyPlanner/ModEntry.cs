@@ -18,11 +18,13 @@ namespace DailyPlanner
         *********/
 
         /// <summary>The mod settings.</summary>
-        private ModConfig Config;
+        private ModConfig Config { get; set; }
 
         public Planner Planner;
 
         private PlannerOverlay Overlay;
+
+        public CheckList CheckList;
 
         /*********
         ** Public methods
@@ -56,7 +58,7 @@ namespace DailyPlanner
             // Open window if button is tab button
             if ((e.Button == this.Config.OpenMenuKey) & (Context.IsWorldReady))
             {
-                Game1.activeClickableMenu = new PlannerMenu(this.Config.DefaultTab, this.Config, this.Planner, this.Helper.Translation, this.Monitor);
+                Game1.activeClickableMenu = new PlannerMenu(this.Config.DefaultTab, this.Config, this.Planner, this.CheckList, this.Helper.Translation, this.Monitor);
                 Game1.soundBank.PlayCue("bigSelect");
             }
                 
@@ -71,11 +73,13 @@ namespace DailyPlanner
         {
             this.Planner = new Planner(Game1.year, this.Helper, this.Monitor);
             this.Planner.CreateDailyPlan();
+            this.CheckList = new();
         }
 
         private void OnRenderingHud(object sender, RenderingHudEventArgs e)
         {
             if (this.Config.ShowOverlay 
+                && (this.Config.ShowPlannerTasks || this.Config.ShowChecklistTasks)
                 && Game1.currentLocation?.currentEvent == null 
                 && Game1.farmEvent == null 
                 && !Game1.game1.takingMapScreenshot
@@ -109,6 +113,22 @@ namespace DailyPlanner
                 tooltip: () => this.Helper.Translation.Get("config.overlay_toggle.tooltip"),
                 getValue: () => this.Config.ShowOverlay,
                 setValue: (bool val) => this.Config.ShowOverlay = val);
+
+            // show planner tasks toggle
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => this.Helper.Translation.Get("config.show_planner_tasks.name"),
+                tooltip: () => this.Helper.Translation.Get("config.show_planner_tasks.tooltip"),
+                getValue: () => this.Config.ShowPlannerTasks,
+                setValue: (bool val) => this.Config.ShowPlannerTasks = val);
+
+            // show checklist tasks toggle
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => this.Helper.Translation.Get("config.show_checklist_tasks.name"),
+                tooltip: () => this.Helper.Translation.Get("config.show_checklist_tasks.tooltip"),
+                getValue: () => this.Config.ShowChecklistTasks,
+                setValue: (bool val) => this.Config.ShowChecklistTasks = val);
 
             // overlay background opacity
             configMenu.AddNumberOption(

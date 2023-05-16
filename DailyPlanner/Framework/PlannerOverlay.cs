@@ -45,28 +45,67 @@ namespace DailyPlanner.Framework
             return $"{text[..length]}...";
         }
 
-        private string GetFormattedList(List<string> todaysPlanList)
+        private string GetFormattedList(List<string> todaysPlanList, List<string> checklist)
         {
             StringBuilder stringBuilder = new();
             int numLines = 0;
             int ListMaxHeaderLength = (int)Game1.smallFont.MeasureString(new string('_', this.Config.OverlayMaxLength)).X;
-            foreach (string str in todaysPlanList)
+
+            // Add planner header if both options are enabled and planner list > 0
+            if(this.Config.ShowPlannerTasks && this.Config.ShowChecklistTasks 
+                && todaysPlanList.Count > 0)
             {
-                if (Game1.smallFont.MeasureString($"• {str}").X < ListMaxHeaderLength) stringBuilder.AppendLine($"• {str}");
-                else stringBuilder.AppendLine(ConcatLine($"• {str}", ListMaxHeaderLength));
+                stringBuilder.AppendLine("Planner:");
                 numLines++;
-                if (numLines == this.Config.OverlayMaxLines) break;
             }
+
+            // Add tasks in daily planner if enabled, we have free lines, and planner list > 0
+            if (this.Config.ShowPlannerTasks 
+                && numLines < this.Config.OverlayMaxLines 
+                && todaysPlanList.Count > 0) {
+                foreach (string str in todaysPlanList)
+                {
+                    if (Game1.smallFont.MeasureString($"• {str}").X < ListMaxHeaderLength) stringBuilder.AppendLine($"• {str}");
+                    else stringBuilder.AppendLine(ConcatLine($"• {str}", ListMaxHeaderLength));
+                    numLines++;
+                    if (numLines == this.Config.OverlayMaxLines) break;
+                }                
+            }
+
+            // Add checklist header if both options are enabled, we have free lines, and checklist > 0
+            if (this.Config.ShowPlannerTasks && this.Config.ShowChecklistTasks 
+                && numLines < this.Config.OverlayMaxLines 
+                && checklist.Count > 0)
+            {
+                stringBuilder.AppendLine("Checklist:");
+                numLines++;
+            }
+
+            // Add tasks in checklist if enabled, we have free lines, and checklist > 0
+            if (this.Config.ShowChecklistTasks
+                && numLines < this.Config.OverlayMaxLines
+                && checklist.Count > 0)
+            {
+                foreach (string str in checklist)
+                {
+                    if (Game1.smallFont.MeasureString($"• {str}").X < ListMaxHeaderLength) stringBuilder.AppendLine($"• {str}");
+                    else stringBuilder.AppendLine(ConcatLine($"• {str}", ListMaxHeaderLength));
+                    numLines++;
+                    if (numLines == this.Config.OverlayMaxLines) break;
+                }
+            }
+
             return  stringBuilder.ToString();
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             List<string> todaysPlanList = this.ModEntry.Planner.GetDailyPlan();
+            List<string> checklist = this.ModEntry.CheckList.GetCheckListItems();
 
-            if (todaysPlanList.Count > 0)
+            if (todaysPlanList.Count > 0 || checklist.Count > 0)
             {
-                string todaysPlan = GetFormattedList(todaysPlanList);
+                string todaysPlan = GetFormattedList(todaysPlanList, checklist);
                 Vector2 ListHeaderSize = Game1.smallFont.MeasureString(todaysPlan);
                 offsetX = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Left;
                 offsetY = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Top;
