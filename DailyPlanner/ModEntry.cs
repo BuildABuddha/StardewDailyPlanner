@@ -69,7 +69,7 @@ namespace DailyPlanner
 
             private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            this.Planner = new Planner(Game1.year, this.Helper.DirectoryPath, this.Helper.Translation, this.Monitor);
+            this.Planner = new Planner(Game1.year, this.Helper, this.Monitor);
             this.Planner.CreateDailyPlan();
         }
 

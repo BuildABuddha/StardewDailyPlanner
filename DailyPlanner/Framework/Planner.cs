@@ -21,6 +21,8 @@ namespace DailyPlanner.Framework
         /// <summary>Provides translations for the mod.</summary>
         private readonly ITranslationHelper TranslationHelper;
 
+        private readonly IModHelper ModHelper;
+
         public class PlannerData
         {
             public AllYearData AllYear { get; set; }
@@ -43,13 +45,15 @@ namespace DailyPlanner.Framework
             }
         }
 
-        public Planner(int year, string filepath, ITranslationHelper i18n, IMonitor monitor)
+        public Planner(int year, IModHelper modHelper, IMonitor monitor)
         {
+            this.Filepath = StardewModdingAPI.Constants.CurrentSavePath;
             this.Filename = $"year_{year}.json";
-            this.Filepath = filepath;
+            this.ModHelper = modHelper;
+            //this.Filepath = filepath;
             this.Year = year;
             this.Monitor = monitor;
-            this.TranslationHelper = i18n;
+            this.TranslationHelper = this.ModHelper.Translation;
 
             this.Monitor.Log($"Reading plan from {this.Filepath}/{this.Filename} ...", LogLevel.Debug);
             this.ReadJson();
@@ -57,20 +61,36 @@ namespace DailyPlanner.Framework
 
         private void ReadJson()
         {
-            string jsonString;
-            try
-            {
-                jsonString = File.ReadAllText(Path.Combine(this.Filepath, "Plans", this.Filename));
-            }
-            catch (FileNotFoundException)
-            {
-                File.Copy(Path.Combine(this.Filepath, "Plans", "Template.json"), Path.Combine(this.Filepath, "Plans", this.Filename));
-                jsonString = File.ReadAllText(Path.Combine(this.Filepath, "Plans", this.Filename));
-                this.Monitor.Log($"File for current year not found, creating new one using Template.json", LogLevel.Debug);
+            // Check if the file {Constants.SaveFolderPath}\DailyPlanner\year_x.json doesn't exist yet
+            if (!File.Exists(Path.Combine(this.Filepath, "DailyPlanner", this.Filename)))
+            {   
+                // Create the DailyPlanner directory in the save folder if it doesn't exist yet
+                Directory.CreateDirectory(Path.Combine(this.Filepath, "DailyPlanner"));
+
+                // Move file from {this.ModHelper.DirectoryPath}/Plans/year_x.json to new location if it exists.
+                // We do this to move plan .jsons where they used to be stored in older versions of the mod.
+                if (File.Exists(Path.Combine(this.ModHelper.DirectoryPath, "Plans", this.Filename)))
+                {
+                    this.Monitor.Log($"NOTICE: In this version of Daily Planner, the location of stored plans has moved. Your file is being moved from " +
+                        $"{Path.Combine(this.ModHelper.DirectoryPath, "Plans", this.Filename)} to " +
+                        $"{Path.Combine(this.Filepath, "DailyPlanner", this.Filename)}", LogLevel.Alert);
+                    File.Move(
+                        Path.Combine(this.ModHelper.DirectoryPath, "Plans", this.Filename),
+                        Path.Combine(this.Filepath, "DailyPlanner", this.Filename));
+                }
+                // Else, create blank from Template.json
+                else
+                {
+                    this.Monitor.Log($"File for current year not found, creating new one using Template.json", LogLevel.Debug);
+                    File.Copy(
+                        Path.Combine(this.ModHelper.DirectoryPath, "Plans", "Template.json"),
+                        Path.Combine(this.Filepath, "DailyPlanner", this.Filename));
+                }
             }
 
             this.Data = new();
-            this.Data = JsonSerializer.Deserialize<PlannerData>(jsonString)!;
+            this.Data = JsonSerializer.Deserialize<PlannerData>(
+                File.ReadAllText(Path.Combine(this.Filepath, "DailyPlanner", this.Filename)));
         }
 
         public override string ToString()
