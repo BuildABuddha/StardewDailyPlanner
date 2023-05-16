@@ -74,6 +74,15 @@ namespace DailyPlanner.Framework
                 offsetY = (int) Math.Floor((double)Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom * this.Config.OverlayYBufferPercent / 100);
 
                 Rectangle effectiveBounds = new(offsetX, offsetY, (int)(ListHeaderSize.X + marginLeft + marginRight), (int)(marginTop + (ListHeaderSize.Y)) + marginBottom);
+
+                if (Game1.CurrentMineLevel > 0
+               || Game1.currentLocation is VolcanoDungeon vd && vd.level.Value > 0
+               || Game1.currentLocation is Club)
+                {
+                    int yAdjust = Game1.uiMode ? (int)MathF.Ceiling(80f * Game1.options.zoomLevel / Game1.options.uiScale) : 80;
+                    effectiveBounds.Y = Math.Max(effectiveBounds.Y, yAdjust);
+                }
+
                 float topPx = effectiveBounds.Y + marginTop;
                 float leftPx = effectiveBounds.X + marginLeft;
                 if(this.Config.OverlayBackgroundOpacity > 0) IClickableMenu.drawTextureBox(spriteBatch, Game1.menuTexture, new Rectangle(0, 256, 60, 60), effectiveBounds.X, effectiveBounds.Y, effectiveBounds.Width, effectiveBounds.Height, Color.White * this.Config.OverlayBackgroundOpacity);
