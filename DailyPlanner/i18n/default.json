@@ -47,10 +47,18 @@
   // mod config text
   "config.keybind.name": "Open menu key",
   "config.keybind.tooltip": "Button for opening the Daily Planner menu",
-  "config.overlaytoggle.name": "Show overlay",
-  "config.overlaytoggle.tooltip": "Enable/disable HUD overlay",
-  "config.backgroundopacity.name": "Overlay background opacity",
-  "config.backgroundopacity.tooltip": "Transparency of the overlay background",
-  "config.textopacity.name": "Overlay background opacity",
-  "config.textopacity.tooltip": "Transparency of the overlay text"
+  "config.overlay_toggle.name": "Show overlay",
+  "config.overlay_toggle.tooltip": "Enable/disable HUD overlay",
+  "config.background_opacity.name": "Overlay background opacity",
+  "config.background_opacity.tooltip": "Transparency of the overlay background",
+  "config.text_opacity.name": "Overlay text opacity",
+  "config.text_opacity.tooltip": "Transparency of the overlay text",
+  "config.max_lines.name": "Overlay max line count",
+  "config.max_lines.tooltip": "Max number of lines of text on overlay",
+  "config.max_line_length.name": "Overlay max line length",
+  "config.max_line_length.tooltip": "Max length of text on overlay",
+  "config.x_position.name": "Overlay X position %",
+  "config.x_position.tooltip": "Moves the overlay left/right",
+  "config.y_position.name": "Overlay y position %",
+  "config.y_position.tooltip": "Moves the overlay up/down"
 }
