@@ -194,6 +194,7 @@ namespace DailyPlanner.Framework
                     break;
 
                 case MenuTab.Checklist:
+                    this.Options.Add(new TextBoxComponent(TaskType.Checklist, slotWidth, this));
                     foreach (string task in this.CheckList.GetCheckListItems())
                     {
                         this.Options.Add(new PlannerListComponent(task, slotWidth, this.CheckList, this));
@@ -464,7 +465,7 @@ namespace DailyPlanner.Framework
             this.Scrollbar.tryHover(x, y);
         }
 
-        public void OnAddTaskButtonPressed(TaskType buttonType, string input)
+        public void OnTextBoxButtonPressed(TaskType buttonType, string input)
         {
             switch(buttonType)
             {
@@ -476,6 +477,10 @@ namespace DailyPlanner.Framework
                     break;
                 case TaskType.Weekly:
                     this.Planner.AddTask(this.WeeklySeasonSlider.GetOutputInt(), buttonType, this.WeeklyDayOfWeekSlider.GetOutputInt(), input);
+                    break;
+                case TaskType.Checklist:
+                    this.CheckList.AddTask(input); 
+                    Game1.activeClickableMenu = new PlannerMenu(this);
                     break;
                 default:
                     break;

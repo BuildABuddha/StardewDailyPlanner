@@ -10,6 +10,9 @@
         Weekly,
 
         /// <summary>A one-day task on a certain date.</summary>
-        OnDate
+        OnDate,
+
+        /// <summary>A checklist task. Should ONLY show up on the checklist and not the daily planner.</summary>
+        Checklist
     }
 }

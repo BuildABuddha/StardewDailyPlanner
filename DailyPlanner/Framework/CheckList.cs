@@ -9,19 +9,23 @@ namespace DailyPlanner.Framework
         /// <summary>List of items on the checklist.</summary>
         private readonly List<string> CheckListItems;
 
-        /// <summary>Construct a checklist by reading the Checklist.txt file, or create a file if it doesn't exist.</summary>
+        private readonly string Filename;
+
+        /// <summary>
+        /// Construct a checklist by reading the Checklist.txt file, or create a file if it doesn't exist.
+        /// </summary>
         public CheckList()
         {
-            string filename = Path.Combine("Mods", "DailyPlanner", "Plans", "Checklist.txt");  // TODO: Make sure we don't need the complete path from the root directory.
-            if (File.Exists(filename))  // Read each line of the file into a list, then remove blank entries. 
+            this.Filename = Path.Combine(StardewModdingAPI.Constants.CurrentSavePath, "DailyPlanner", "Checklist.txt");
+            if (File.Exists(this.Filename))  // Read each line of the file into a list, then remove blank entries. 
             {
-                this.CheckListItems = new List<string>(File.ReadAllLines(filename, Encoding.UTF8));  
+                this.CheckListItems = new List<string>(File.ReadAllLines(this.Filename, Encoding.UTF8));  
                 this.CheckListItems.Remove("");
                 this.CheckListItems.Remove(" ");
-            } else  // If file doesn't exist, create it and fill it with instructions on how to edit it.
+            } else  // If file doesn't exist, create a blank one.
             {
-                string[] list = new string[] { "Find DailyPlanner/Plans/Checklist.txt.", "Open it in notepad.", "Add your tasks.", "Open this menu agian." };
-                File.WriteAllLines(filename, list);
+                Directory.CreateDirectory(Path.Combine(StardewModdingAPI.Constants.CurrentSavePath, "DailyPlanner"));
+                File.WriteAllLines(this.Filename, System.Array.Empty<string>());
             }
         }
 
@@ -30,13 +34,24 @@ namespace DailyPlanner.Framework
             return this.CheckListItems;
         }
 
-        /// <summary>Delete item from the checklist, then save the file.</summary>
+        /// <summary>
+        /// Delete item from the checklist, then save the file.
+        /// </summary>
         /// <param name="label">Text of the item being marked off.</param>
         public void CompleteTask(string label)
         {
             this.CheckListItems.Remove(label);
-            string filename = Path.Combine("Mods", "DailyPlanner", "Plans", "Checklist.txt");
-            File.WriteAllLines(filename, this.CheckListItems);
+            File.WriteAllLines(this.Filename, this.CheckListItems);
+        }
+
+        /// <summary>
+        /// Add items to the checklist, then save the file.
+        /// </summary>
+        /// <param name="label">Text of the item being added.</param>
+        public void AddTask(string label)
+        {
+            this.CheckListItems.Insert(0, label);
+            File.WriteAllLines(this.Filename, this.CheckListItems);
         }
     }
 }

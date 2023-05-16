@@ -95,7 +95,7 @@ namespace DailyPlanner.Framework
             {
                 Game1.soundBank.PlayCue("achievement");
                 this.DeselectInputBox();
-                this.PlannerMenu.OnAddTaskButtonPressed(this.ButtonType, this.InputBox.Text);
+                this.PlannerMenu.OnTextBoxButtonPressed(this.ButtonType, this.InputBox.Text);
                 this.InputBox.Text = "";
             }
             else
