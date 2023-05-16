@@ -82,7 +82,6 @@ namespace DailyPlanner
                 ) this.Overlay?.Draw(e.SpriteBatch);
         }
 
-        // TODO: Replace options menu settings with translations 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
             // get Generic Mod Config Menu's API (if it's installed)
@@ -98,72 +97,79 @@ namespace DailyPlanner
             // add keybind
             configMenu.AddKeybind(
                 mod: ModManifest,
-                name: () => "Open menu key",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.keybind.name"),
+                tooltip: () => this.Helper.Translation.Get("config.keybind.tooltip"),
                 getValue: () => this.Config.OpenMenuKey,
                 setValue: (SButton val) => this.Config.OpenMenuKey = val);
 
+            // show overlay toggle
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => "Show Overlay",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.overlay_toggle.name"),
+                tooltip: () => this.Helper.Translation.Get("config.overlay_toggle.tooltip"),
                 getValue: () => this.Config.ShowOverlay,
                 setValue: (bool val) => this.Config.ShowOverlay = val);
 
+            // overlay background opacity
             configMenu.AddNumberOption(
                 mod: ModManifest,
-                name: () => "Overlay background opacity",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.background_opacity.name"),
+                tooltip: () => this.Helper.Translation.Get("config.background_opacity.tooltip"),
                 getValue: () => this.Config.OverlayBackgroundOpacity,
                 setValue: (float val) => this.Config.OverlayBackgroundOpacity = val,
                 min: 0.0F,
                 max: 1.0F,
                 interval: 0.1F);
 
+            // overlay text opacity
             configMenu.AddNumberOption(
                 mod: ModManifest,
-                name: () => "Overlay text opacity",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.text_opacity.name"),
+                tooltip: () => this.Helper.Translation.Get("config.text_opacity.tooltip"),
                 getValue: () => this.Config.OverlayTextOpacity,
                 setValue: (float val) => this.Config.OverlayTextOpacity = val,
                 min: 0.0F,
                 max: 1.0F,
                 interval: 0.1F);
 
+            // overlay max line count
             configMenu.AddNumberOption(
                 mod: ModManifest,
-                name: () => "Overlay max lines",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.max_lines.name"),
+                tooltip: () => this.Helper.Translation.Get("config.max_lines.tooltip"),
                 getValue: () => this.Config.OverlayMaxLines,
                 setValue: (int val) => this.Config.OverlayMaxLines = val,
                 min: 1,
                 max: 25,
                 interval: 1);
 
+            // overlay max line length
             configMenu.AddNumberOption(
                 mod: ModManifest,
-                name: () => "Overlay max line length",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.max_line_length.name"),
+                tooltip: () => this.Helper.Translation.Get("config.max_line_length.tooltip"),
                 getValue: () => this.Config.OverlayMaxLength,
                 setValue: (int val) => this.Config.OverlayMaxLength = val,
                 min: 10,
                 max: 40,
                 interval: 1);
 
+            // overlay x position
             configMenu.AddNumberOption(
                 mod: ModManifest,
-                name: () => "Overlay X position %",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.x_position.name"),
+                tooltip: () => this.Helper.Translation.Get("config.x_position.tooltip"),
                 getValue: () => this.Config.OverlayXBufferPercent,
                 setValue: (int val) => this.Config.OverlayXBufferPercent = val,
                 min: 0,
                 max: 100,
                 interval: 1);
 
+            // overlay y position
             configMenu.AddNumberOption(
                 mod: ModManifest,
-                name: () => "Overlay Y position %",
-                tooltip: () => "",
+                name: () => this.Helper.Translation.Get("config.y_position.name"),
+                tooltip: () => this.Helper.Translation.Get("config.y_position.tooltip"),
                 getValue: () => this.Config.OverlayYBufferPercent,
                 setValue: (int val) => this.Config.OverlayYBufferPercent = val,
                 min: 0,

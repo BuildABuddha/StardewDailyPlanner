@@ -42,5 +42,15 @@
   // instructions
   "instructions.add_one_day": "Add task on specific date:",
   "instructions.add_daily": "Add daily task:",
-  "instructions.add_weekly": "Add weekly task:"
+  "instructions.add_weekly": "Add weekly task:",
+
+  // mod config text
+  "config.keybind.name": "Open menu key",
+  "config.keybind.tooltip": "Button for opening the Daily Planner menu",
+  "config.overlaytoggle.name": "Show overlay",
+  "config.overlaytoggle.tooltip": "Enable/disable HUD overlay",
+  "config.backgroundopacity.name": "Overlay background opacity",
+  "config.backgroundopacity.tooltip": "Transparency of the overlay background",
+  "config.textopacity.name": "Overlay background opacity",
+  "config.textopacity.tooltip": "Transparency of the overlay text"
 }
