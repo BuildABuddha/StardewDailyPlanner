@@ -51,7 +51,11 @@ namespace DailyPlanner.Framework
                 TitleText = label,
                 Text = label
             };
-            this.SetButtonBounds = new Rectangle(slotWidth - 28 * Game1.pixelZoom, -1 + Game1.pixelZoom * 3, 21 * Game1.pixelZoom, 11 * Game1.pixelZoom);
+            this.SetButtonBounds = new Rectangle(
+                slotWidth - (SetButtonSprite.Width + 7) * Game1.pixelZoom, 
+                -1 + Game1.pixelZoom * 3, 
+                SetButtonSprite.Width * Game1.pixelZoom, 
+                SetButtonSprite.Height * Game1.pixelZoom);
             this.ButtonType = buttonType;
         }
 
