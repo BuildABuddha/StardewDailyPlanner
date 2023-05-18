@@ -17,14 +17,13 @@ namespace DailyPlanner.Framework
         private readonly CheckList CheckList;
 
         /// <summary>The source rectangle for the 'set' button sprite.</summary>
-        //private readonly Rectangle SetButtonSprite = new(294, 428, 21, 11);
         private readonly Rectangle DoneButtonSprite = new(441, 411, 24, 13);
 
         /// <summary>Defines if button is used on checklist tasks rather than daily tasks.</summary>
         private readonly bool IsCheckListButton;
 
         /// <summary>Area on the screen that the button occupies. Used to check if we click on it.</summary>
-        private Rectangle SetButtonBounds;
+        private Rectangle DoneButtonBounds;
 
         /// <summary>The original menu, so it can be refreshed.</summary>
         private readonly PlannerMenu PlannerMenu;
@@ -42,7 +41,7 @@ namespace DailyPlanner.Framework
         public PlannerListComponent(string label, int slotWidth, Planner planner, PlannerMenu plannermenu, bool includeButton = true)
           : base(label, -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
-            this.SetButtonBounds = new Rectangle(
+            this.DoneButtonBounds = new Rectangle(
                 slotWidth - (DoneButtonSprite.Width + 7) * Game1.pixelZoom, 
                 -1 + Game1.pixelZoom * 3,
                 DoneButtonSprite.Width * Game1.pixelZoom, 
@@ -60,7 +59,7 @@ namespace DailyPlanner.Framework
         public PlannerListComponent(string label, int slotWidth, CheckList checkList, PlannerMenu plannermenu, bool includeButton = true)
           : base(label, -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
-            this.SetButtonBounds = new Rectangle(
+            this.DoneButtonBounds = new Rectangle(
                 slotWidth - (DoneButtonSprite.Width + 7) * Game1.pixelZoom, 
                 -1 + Game1.pixelZoom * 3, 
                 DoneButtonSprite.Width * Game1.pixelZoom, 
@@ -78,7 +77,7 @@ namespace DailyPlanner.Framework
         {
             if (this.HasButton)
             {
-                if (this.greyedOut ||!this.SetButtonBounds.Contains(x, y)) { return; }      // Didn't click on button. Do nothing.
+                if (this.greyedOut ||!this.DoneButtonBounds.Contains(x, y)) { return; }      // Didn't click on button. Do nothing.
                 else if (this.IsCheckListButton) { this.CheckList.CompleteTask(label); }    // Clicked on checklist button!
                 else { this.Planner.CompleteTask(label); }                                  // Clicked on daily planner button!
 
@@ -106,7 +105,7 @@ namespace DailyPlanner.Framework
                 Utility.drawWithShadow(
                     spriteBatch,
                     Game1.mouseCursors,
-                    new Vector2(this.SetButtonBounds.X + slotX, this.SetButtonBounds.Y + slotY),
+                    new Vector2(this.DoneButtonBounds.X + slotX, this.DoneButtonBounds.Y + slotY),
                     this.DoneButtonSprite,
                     Color.White,
                     0.0f,
