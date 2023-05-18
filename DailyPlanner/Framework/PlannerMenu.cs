@@ -54,13 +54,13 @@ namespace DailyPlanner.Framework
         private readonly List<string> SeasonList;
         private readonly List<string> SeasonListWithAllYear = new() { "All Year", "Spring", "Summer", "Fall", "Winter" };
 
-        private readonly SliderComponent OnDateSeasonSlider;
-        private readonly SliderComponent OnDateDaySlider;
-        private readonly SliderComponent DailySeasonSlider;
-        private readonly SliderComponent WeeklySeasonSlider;
-        private readonly SliderComponent WeeklyDayOfWeekSlider;
-        private readonly SliderComponent RemoveTaskSeasonSlider;
-        private readonly SliderComponent RemoveTaskDaySlider;
+        private readonly PlusMinusComponent OnDateSeasonPlusMinus;
+        private readonly PlusMinusComponent OnDateDayPlusMinus;
+        private readonly PlusMinusComponent DailySeasonPlusMinus;
+        private readonly PlusMinusComponent WeeklySeasonPlusMinus;
+        private readonly PlusMinusComponent WeeklyDayOfWeekPlusMinus;
+        private readonly PlusMinusComponent RemoveTaskSeasonSlider;
+        private readonly PlusMinusComponent RemoveTaskDayPlusMinus;
 
         /*********
         ** Public methods
@@ -109,13 +109,13 @@ namespace DailyPlanner.Framework
 
             this.HasSelectedTextbox = false;
 
-            this.OnDateSeasonSlider = new(SeasonList, i18n.Get("slider.season"), this);
-            this.OnDateDaySlider = new(1, 28, i18n.Get("slider.day"), this);
-            this.DailySeasonSlider = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
-            this.WeeklySeasonSlider = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
-            this.WeeklyDayOfWeekSlider = new(WeekdayList, i18n.Get("slider.week"), this);
+            this.OnDateSeasonPlusMinus = new(SeasonList, i18n.Get("slider.season"), this);
+            this.OnDateDayPlusMinus = new(1, 28, i18n.Get("slider.day"), this);
+            this.DailySeasonPlusMinus = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
+            this.WeeklySeasonPlusMinus = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
+            this.WeeklyDayOfWeekPlusMinus = new(WeekdayList, i18n.Get("slider.week"), this);
             this.RemoveTaskSeasonSlider = new(SeasonList, i18n.Get("slider.season"), this);
-            this.RemoveTaskDaySlider = new(1, 28, i18n.Get("slider.day"), this);
+            this.RemoveTaskDayPlusMinus = new(1, 28, i18n.Get("slider.day"), this);
 
             {
                 int i = 0;
@@ -218,26 +218,25 @@ namespace DailyPlanner.Framework
                     break;
 
                 case MenuTab.Add:
-
                     this.Options.Add(new OptionsElement(i18n.Get("instructions.add_one_day")));
-                    this.Options.Add(OnDateSeasonSlider);
-                    this.Options.Add(OnDateDaySlider);
+                    this.Options.Add(OnDateSeasonPlusMinus);
+                    this.Options.Add(OnDateDayPlusMinus);
                     this.Options.Add(new TextBoxComponent(TaskType.OnDate, slotWidth, this));
 
                     this.Options.Add(new OptionsElement(""));
                     this.Options.Add(new OptionsElement(i18n.Get("instructions.add_daily")));
-                    this.Options.Add(DailySeasonSlider);
+                    this.Options.Add(DailySeasonPlusMinus);
                     this.Options.Add(new TextBoxComponent(TaskType.Daily, slotWidth, this));
 
                     this.Options.Add(new OptionsElement(""));
                     this.Options.Add(new OptionsElement(i18n.Get("instructions.add_weekly")));
-                    this.Options.Add(WeeklySeasonSlider);
-                    this.Options.Add(WeeklyDayOfWeekSlider);
+                    this.Options.Add(WeeklySeasonPlusMinus);
+                    this.Options.Add(WeeklyDayOfWeekPlusMinus);
                     this.Options.Add(new TextBoxComponent(TaskType.Weekly, slotWidth, this));
                     break;
                 case MenuTab.Remove:
                     this.Options.Add(RemoveTaskSeasonSlider);
-                    this.Options.Add(RemoveTaskDaySlider);
+                    this.Options.Add(RemoveTaskDayPlusMinus);
                     this.RefreshRemoveTaskTab();
                     break;
             }
@@ -277,7 +276,7 @@ namespace DailyPlanner.Framework
                 if (this.Options.Count > 2) this.Options.RemoveRange(2, this.Options.Count - 2);
                 int slotWidth = this.OptionSlots[0].bounds.Width;
                 int season = this.RemoveTaskSeasonSlider.GetOutputInt() + 1;
-                int day = this.RemoveTaskDaySlider.GetOutputInt();
+                int day = this.RemoveTaskDayPlusMinus.GetOutputInt();
                 foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, TaskType.Daily, day))
                 {
                     this.Options.Add(new RemoveTaskComponent(TaskType.Daily, day, line, slotWidth, this.Planner, this));
@@ -470,13 +469,13 @@ namespace DailyPlanner.Framework
             switch(buttonType)
             {
                 case TaskType.OnDate:
-                    this.Planner.AddTask(this.OnDateSeasonSlider.GetOutputInt() + 1, buttonType, this.OnDateDaySlider.GetOutputInt(), input);
+                    this.Planner.AddTask(this.OnDateSeasonPlusMinus.GetOutputInt() + 1, buttonType, this.OnDateDayPlusMinus.GetOutputInt(), input);
                     break;
                 case TaskType.Daily:
-                    this.Planner.AddTask(this.DailySeasonSlider.GetOutputInt(), buttonType, 0, input);
+                    this.Planner.AddTask(this.DailySeasonPlusMinus.GetOutputInt(), buttonType, 0, input);
                     break;
                 case TaskType.Weekly:
-                    this.Planner.AddTask(this.WeeklySeasonSlider.GetOutputInt(), buttonType, this.WeeklyDayOfWeekSlider.GetOutputInt(), input);
+                    this.Planner.AddTask(this.WeeklySeasonPlusMinus.GetOutputInt(), buttonType, this.WeeklyDayOfWeekPlusMinus.GetOutputInt(), input);
                     break;
                 case TaskType.Checklist:
                     this.CheckList.AddTask(input); 

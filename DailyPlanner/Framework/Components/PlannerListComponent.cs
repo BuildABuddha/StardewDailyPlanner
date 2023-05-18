@@ -17,8 +17,9 @@ namespace DailyPlanner.Framework
         private readonly CheckList CheckList;
 
         /// <summary>The source rectangle for the 'set' button sprite.</summary>
-        private readonly Rectangle SetButtonSprite = new(294, 428, 21, 11);
-        
+        //private readonly Rectangle SetButtonSprite = new(294, 428, 21, 11);
+        private readonly Rectangle SetButtonSprite = new(441, 411, 24, 13);
+
         /// <summary>Defines if button is used on checklist tasks rather than daily tasks.</summary>
         private readonly bool IsCheckListButton;
 
@@ -41,7 +42,11 @@ namespace DailyPlanner.Framework
         public PlannerListComponent(string label, int slotWidth, Planner planner, PlannerMenu plannermenu, bool includeButton = true)
           : base(label, -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
-            this.SetButtonBounds = new Rectangle(slotWidth - 28 * Game1.pixelZoom, -1 + Game1.pixelZoom * 3, 21 * Game1.pixelZoom, 11 * Game1.pixelZoom);
+            this.SetButtonBounds = new Rectangle(
+                slotWidth - (SetButtonSprite.Width + 7) * Game1.pixelZoom, 
+                -1 + Game1.pixelZoom * 3,
+                SetButtonSprite.Width * Game1.pixelZoom, 
+                SetButtonSprite.Height * Game1.pixelZoom);
             this.Planner = planner;
             this.PlannerMenu = plannermenu;
             this.HasButton = includeButton;
@@ -55,7 +60,11 @@ namespace DailyPlanner.Framework
         public PlannerListComponent(string label, int slotWidth, CheckList checkList, PlannerMenu plannermenu, bool includeButton = true)
           : base(label, -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
-            this.SetButtonBounds = new Rectangle(slotWidth - 28 * Game1.pixelZoom, -1 + Game1.pixelZoom * 3, 21 * Game1.pixelZoom, 11 * Game1.pixelZoom);
+            this.SetButtonBounds = new Rectangle(
+                slotWidth - (SetButtonSprite.Width + 7) * Game1.pixelZoom, 
+                -1 + Game1.pixelZoom * 3, 
+                SetButtonSprite.Width * Game1.pixelZoom, 
+                SetButtonSprite.Height * Game1.pixelZoom);
             this.CheckList = checkList;
             this.PlannerMenu = plannermenu;
             this.IsCheckListButton = true;

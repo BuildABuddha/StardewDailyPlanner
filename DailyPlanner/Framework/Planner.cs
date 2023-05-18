@@ -230,16 +230,7 @@ namespace DailyPlanner.Framework
             bool isSameSeason = StardewModdingAPI.Utilities.SDate.Now().SeasonIndex +1 == season;
             bool isSameDayOfWeek = DayToDayOfWeekIndex(StardewModdingAPI.Utilities.SDate.Now().Day) == DayToDayOfWeekIndex(day);
 
-            string jsonString;
-            try
-            {
-                jsonString = File.ReadAllText(Path.Combine(this.Filepath, "Plans", this.Filename));
-            }
-            catch (FileNotFoundException)
-            {
-                File.Copy(Path.Combine(this.Filepath, "Plans", "Template.json"), Path.Combine(this.Filepath, "Plans", this.Filename));
-                jsonString = File.ReadAllText(Path.Combine(this.Filepath, "Plans", this.Filename));
-            }
+            string jsonString = File.ReadAllText(Path.Combine(this.Filepath, "DailyPlanner", this.Filename)); 
 
             TempData = JsonSerializer.Deserialize<PlannerData>(jsonString)!;
 
@@ -308,7 +299,7 @@ namespace DailyPlanner.Framework
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             jsonString = new(JsonSerializer.Serialize(TempData, options));
-            File.WriteAllText(Path.Combine(this.Filepath, "Plans", this.Filename), jsonString);
+            File.WriteAllText(Path.Combine(this.Filepath, "DailyPlanner", this.Filename), jsonString);
         }
 
         public void RemoveTask(int season, TaskType type, int day, string taskName)
@@ -325,16 +316,7 @@ namespace DailyPlanner.Framework
 
             int dayOfWeekIndex = DayToDayOfWeekIndex(day);
 
-            string jsonString;
-            try
-            {
-                jsonString = File.ReadAllText(Path.Combine(this.Filepath, "Plans", this.Filename));
-            }
-            catch (FileNotFoundException)
-            {
-                File.Copy(Path.Combine(this.Filepath, "Plans", "Template.json"), Path.Combine(this.Filepath, "Plans", this.Filename));
-                jsonString = File.ReadAllText(Path.Combine(this.Filepath, "Plans", this.Filename));
-            }
+            string jsonString = File.ReadAllText(Path.Combine(this.Filepath, "DailyPlanner", this.Filename));
 
             TempData = JsonSerializer.Deserialize<PlannerData>(jsonString)!;
 
@@ -404,7 +386,7 @@ namespace DailyPlanner.Framework
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             jsonString = new(JsonSerializer.Serialize(TempData, options));
-            File.WriteAllText(Path.Combine(this.Filepath, "Plans", this.Filename), jsonString);
+            File.WriteAllText(Path.Combine(this.Filepath, "DailyPlanner", this.Filename), jsonString);
         }
 
         public static int DayToDayOfWeekIndex(int day)
