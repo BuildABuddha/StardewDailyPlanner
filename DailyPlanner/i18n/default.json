@@ -44,6 +44,10 @@
   "instructions.add_daily": "Add daily task:",
   "instructions.add_weekly": "Add weekly task:",
 
+  // overlay
+  "overlay.planner": "Planner:",
+  "overlay.checklist": "Checklist:",
+
   // mod config text
   "config.keybind.name": "Open menu key",
   "config.keybind.tooltip": "Button for opening the Daily Planner menu",
