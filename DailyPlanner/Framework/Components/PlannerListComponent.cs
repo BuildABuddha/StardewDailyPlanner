@@ -18,7 +18,7 @@ namespace DailyPlanner.Framework
 
         /// <summary>The source rectangle for the 'set' button sprite.</summary>
         //private readonly Rectangle SetButtonSprite = new(294, 428, 21, 11);
-        private readonly Rectangle SetButtonSprite = new(441, 411, 24, 13);
+        private readonly Rectangle DoneButtonSprite = new(441, 411, 24, 13);
 
         /// <summary>Defines if button is used on checklist tasks rather than daily tasks.</summary>
         private readonly bool IsCheckListButton;
@@ -43,10 +43,10 @@ namespace DailyPlanner.Framework
           : base(label, -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
             this.SetButtonBounds = new Rectangle(
-                slotWidth - (SetButtonSprite.Width + 7) * Game1.pixelZoom, 
+                slotWidth - (DoneButtonSprite.Width + 7) * Game1.pixelZoom, 
                 -1 + Game1.pixelZoom * 3,
-                SetButtonSprite.Width * Game1.pixelZoom, 
-                SetButtonSprite.Height * Game1.pixelZoom);
+                DoneButtonSprite.Width * Game1.pixelZoom, 
+                DoneButtonSprite.Height * Game1.pixelZoom);
             this.Planner = planner;
             this.PlannerMenu = plannermenu;
             this.HasButton = includeButton;
@@ -55,16 +55,16 @@ namespace DailyPlanner.Framework
         /// <summary>Construct a button with CheckList helper.</summary>
         /// <param name="label">The field label.</param>
         /// <param name="slotWidth">The field width.</param>
-        /// <param name="checkList">The checklist helper.</param>
+        /// <param name="checkList">The checklist helper.</param>Refactoring & documentation
         /// <param name="plannermenu">The PlannerMenu creating this button.</param>
         public PlannerListComponent(string label, int slotWidth, CheckList checkList, PlannerMenu plannermenu, bool includeButton = true)
           : base(label, -1, -1, slotWidth + 1, 11 * Game1.pixelZoom)
         {
             this.SetButtonBounds = new Rectangle(
-                slotWidth - (SetButtonSprite.Width + 7) * Game1.pixelZoom, 
+                slotWidth - (DoneButtonSprite.Width + 7) * Game1.pixelZoom, 
                 -1 + Game1.pixelZoom * 3, 
-                SetButtonSprite.Width * Game1.pixelZoom, 
-                SetButtonSprite.Height * Game1.pixelZoom);
+                DoneButtonSprite.Width * Game1.pixelZoom, 
+                DoneButtonSprite.Height * Game1.pixelZoom);
             this.CheckList = checkList;
             this.PlannerMenu = plannermenu;
             this.IsCheckListButton = true;
@@ -107,7 +107,7 @@ namespace DailyPlanner.Framework
                     spriteBatch,
                     Game1.mouseCursors,
                     new Vector2(this.SetButtonBounds.X + slotX, this.SetButtonBounds.Y + slotY),
-                    this.SetButtonSprite,
+                    this.DoneButtonSprite,
                     Color.White,
                     0.0f,
                     Vector2.Zero,
