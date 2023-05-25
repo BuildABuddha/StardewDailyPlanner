@@ -55,7 +55,7 @@ namespace DailyPlanner.Framework
             this.Monitor = monitor;
             this.TranslationHelper = this.ModHelper.Translation;
 
-            this.Monitor.Log($"Reading plan from {this.Filepath}/{this.Filename} ...", LogLevel.Debug);
+            this.Monitor.Log($"Reading plan from {Path.Combine(this.Filepath, "DailyPlanner", this.Filename)}", LogLevel.Debug);
             this.ReadJson();
         }
 
@@ -217,9 +217,6 @@ namespace DailyPlanner.Framework
         {
             PlannerData TempData;
 
-            this.Monitor.Log($"Value for SDate.Now().Day: {StardewModdingAPI.Utilities.SDate.Now().Day}", LogLevel.Alert);
-            this.Monitor.Log($"Value for day: {day}", LogLevel.Alert);
-
             int dayOfWeekIndex;
             if (type == TaskType.Weekly) dayOfWeekIndex = day;
             else {
@@ -232,7 +229,6 @@ namespace DailyPlanner.Framework
                 && StardewModdingAPI.Utilities.SDate.Now().Day == day;
             bool isSameSeason = StardewModdingAPI.Utilities.SDate.Now().SeasonIndex +1 == season;
             bool isSameDayOfWeek = DayToDayOfWeekIndex(StardewModdingAPI.Utilities.SDate.Now().Day) == dayOfWeekIndex;
-            this.Monitor.Log($"Value for isSameDayOfWeek: {isSameDayOfWeek}", LogLevel.Alert);
 
             string jsonString = File.ReadAllText(Path.Combine(this.Filepath, "DailyPlanner", this.Filename)); 
 
