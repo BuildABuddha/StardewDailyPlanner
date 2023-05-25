@@ -6,5 +6,5 @@
   "UniqueID": "MevNav.DailyPlanner",
   "EntryDll": "DailyPlanner.dll",
   "MinimumApiVersion": "3.1.3",
-  "UpdateKeys": [ "Nexus:3941" ]
+  "UpdateKeys": [ "Nexus:16704" ]
 }
