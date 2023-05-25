@@ -1,10 +1,14 @@
-﻿#### MevNav's In-Game Daily Planner Mod ####
+﻿#### MevNav's Daily Planner Mod ####
 
-Current version: 1.1.1
-Last Update: May 15th, 2023
-HUD overlay now hides during cutscenes and screenshots. 
-You can also now move the overlay left/right or up/down via Generic Mod Config, in case you have another mod that uses that corner of the screen.
-Please let me know if you find any bugs or have general feedback.
+Current version: 1.2.0
+Last Update: May 24th, 2023
+* Several UI Overhauls. Sliders replaced with +/- buttons and "Set" buttons replaced with "Done" buttons on daily plan and checklist.
+* Several overlay settings added, including moving its position and displaying checklist items. You can find them in the Mod Config menu.
+* Checklist now has a way to add tasks to it in-game rather than having to edit a .txt file. You can still edit that .txt if you want to, though.
+* Plans and checklist are now saved in your save game directory, which allows for unique plans for different save games.
+* Minor controller support. Left thumb stick now controls your cursor in the menu. Optional controller button in Mod Config menu.
+* Basic support for Mobile Phone mod. The "Daily Planner" app, for now, just boots straight into the planner menu, making it a good alternative to a hotkey.
+
 
 How to install this mod:
 1) Install SMAPI.
@@ -16,23 +20,29 @@ How to create a plan:
 1) Load up your game.
 2) Press [ button (left bracket) to bring up the menu. (I recommend changing this button using Generic Mod Config Menu to 'Z')
 3) Click on "Add Task" tab
-4) Use sliders to select when to add a daily, weekly, or one-day task.
+4) Use +/- buttons to select when to add a daily, weekly, or one-day task.
 5) Type the name of your task into the text field. 
-6) Hit "Set" to add the ask. 
+6) Click "Set" to add the task. 
 7) Repeat until all your tasks are added!
 
 How to create a checklist:
-1) In your Stardew Valley/Mods/DailyPlanner/Plans folder, and find the "Checklist.txt" file. 
-2) If it does not exist, create it, or open the menu in-game to create one.
-3) Open this file in notepad or something similar, and add a list of things you want to do, one task for each line. 
-4) Save and close your file, then open your in-game menu again. 
+1) Load up your game.
+2) Open the menu as shown above.
+3) Click on "Checklist" tab.
+4) Type your task into the text field at the top.
+5) Click "Set" to add the task.
+6) Repeat until all your task are added!
+
+How to save/edit/back up your plans or checklist:
+The files for your daily planner and checklist can be found in your Stardew Valley save folder. On Windows, this can be found at...
+%appdata%\StardewValley\Saves\[save game name]\DailyPlanner
+Assuming you've booted up your save game with this mod before, you will find the file 'year_1.json' and 'Checklist.txt'.
+Checklist.txt is the easiest to edit yourself, feel free to type in a big long list there and save it. 
+The .json files are a little harder to edit, but you can easily copy a previous year and save it as 'year_2.json' or something similar like that.
 
 Upcoming features:
-1) Support for Mobile Phone mod
-2) Support for To-Dew mod (so To-Dew and Daily Planner doesn't fight over HUD space)
-2) Controller support
-3) More language support (Currently only English and Spanish)
-4) Ability to edit checklist in-game, although tbh I kinda like being able to just write everything in a .txt
+1) Support for To-Dew mod (so To-Dew and Daily Planner doesn't fight over HUD space, and perhaps even share resources)
+2) Multiplayer support (I need somoene to help me test this)
 
 Known issues: 
 1) The text boxes on the "Add Task" tab are kind of glitchy, sometimes it's hard to de-select them. Pressing 'Esc' or 'Enter' de-selects them for you.
