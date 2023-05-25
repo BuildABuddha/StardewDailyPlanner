@@ -41,9 +41,10 @@ Checklist.txt is the easiest to edit yourself, feel free to type in a big long l
 The .json files are a little harder to edit, but you can easily copy a previous year and save it as 'year_2.json' or something similar like that.
 
 Upcoming features:
+* Allow users to change the order of tasks in the daily planner and checklist menu
 * Support for To-Dew mod (so To-Dew and Daily Planner doesn't fight over HUD space, and perhaps even share resources)
-* Multiplayer support (I need somoene to help me test this)
-* Possible further mobile phone support, with an actual app that shows tasks on your phone screen? Might be a good alternative to the hud overlay.
+* Multiplayer support, allowing collaborative planning and task completion (I need someone to help me test this)
+* Perhaps further mobile phone support, with an actual app that shows tasks on your phone screen? Might be a good alternative to the hud overlay.
 
 Known issues: 
 * Due to needing to be able to save in a local save directory, the mod is disabled if you're a farmhand in a multiplayer game. Multiplayer support will be added later.
@@ -59,5 +60,5 @@ Credits:
 * aedenthorn for the Mobile Phone mod
 
 Contacts:
-Discord - MevNav#0660
+Discord - MevNav#0660 (You can @ me in the Stardew Valley discord server if you want)
 Feel free to @ me in the Stardew Discord server!
