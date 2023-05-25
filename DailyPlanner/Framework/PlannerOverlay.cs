@@ -160,7 +160,7 @@ namespace DailyPlanner.Framework
             List<string> todaysPlanList = this.ModEntry.Planner.GetDailyPlan();
             List<string> checklist = this.ModEntry.CheckList.GetCheckListItems();
 
-            if (todaysPlanList.Count > 0 || checklist.Count > 0)
+            if (todaysPlanList?.Count > 0 || checklist?.Count > 0)
             {
                 string todaysPlan = GetFormattedList(todaysPlanList, checklist);
                 Vector2 ListHeaderSize = Game1.smallFont.MeasureString(todaysPlan);
