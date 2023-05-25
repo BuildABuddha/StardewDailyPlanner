@@ -14,6 +14,7 @@ namespace DailyPlanner.Framework
         ****/
         /// <summary>The keyboard button which opens the menu.</summary>
         public SButton OpenMenuKey { get; set; } = SButton.OemOpenBrackets;
+        public SButton SecondaryControllerKey { get; set; } = SButton.None;
 
         /****
         ** Menu settings

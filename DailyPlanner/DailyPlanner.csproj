@@ -11,6 +11,9 @@
     <None Include="Plans\Template.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\app-icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="README.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.Menus;
+using System.Text;
 
 namespace DailyPlanner.Framework
 {
@@ -84,17 +85,14 @@ namespace DailyPlanner.Framework
 
         private string GenerateLabel()
         {
-            string returnString = this.Planner.TaskTypeToString(this.Type);
             if (this.Type != TaskType.OnDate)
             {
-                returnString += $", {this.Planner.SeasonIndexToName(this.Season)}: {this.TaskName}";
+                return $"{this.Planner.TaskTypeToString(this.Type)}, {this.Planner.SeasonIndexToName(this.Season)}: {this.TaskName}";
             }
             else
             {
-                returnString += $": {this.TaskName}";
+                return $"{this.Planner.TaskTypeToString(this.Type)}: {this.TaskName}";
             }
-
-            return returnString;
         }
 
         public override void draw(SpriteBatch spriteBatch, int slotX, int slotY, IClickableMenu context = null)

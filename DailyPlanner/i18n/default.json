@@ -51,6 +51,8 @@
   // mod config text
   "config.keybind.name": "Open menu key",
   "config.keybind.tooltip": "Button for opening the Daily Planner menu",
+  "config.controller_button.name": "Open menu controller button",
+  "config.controller_button.tooltip": "Controller button to open Daily Planner Menu",
   "config.overlay_toggle.name": "Show overlay",
   "config.overlay_toggle.tooltip": "Enable/disable HUD overlay",
   "config.show_planner_tasks.name": "Planner tasks in overlay",

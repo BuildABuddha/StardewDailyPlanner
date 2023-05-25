@@ -217,18 +217,22 @@ namespace DailyPlanner.Framework
         {
             PlannerData TempData;
 
+            this.Monitor.Log($"Value for SDate.Now().Day: {StardewModdingAPI.Utilities.SDate.Now().Day}", LogLevel.Alert);
+            this.Monitor.Log($"Value for day: {day}", LogLevel.Alert);
+
             int dayOfWeekIndex;
-
             if (type == TaskType.Weekly) dayOfWeekIndex = day;
-            else dayOfWeekIndex = -1;
-
-            if (day <= 0) { day = 1; }
-            if (day >= 29) { day = 28; }
+            else {
+                dayOfWeekIndex = DayToDayOfWeekIndex(day);
+                if (day <= 0) { day = 1; }
+                if (day >= 29) { day = 28; }
+            }
 
             bool isToday = StardewModdingAPI.Utilities.SDate.Now().SeasonIndex + 1 == season
                 && StardewModdingAPI.Utilities.SDate.Now().Day == day;
             bool isSameSeason = StardewModdingAPI.Utilities.SDate.Now().SeasonIndex +1 == season;
-            bool isSameDayOfWeek = DayToDayOfWeekIndex(StardewModdingAPI.Utilities.SDate.Now().Day) == DayToDayOfWeekIndex(day);
+            bool isSameDayOfWeek = DayToDayOfWeekIndex(StardewModdingAPI.Utilities.SDate.Now().Day) == dayOfWeekIndex;
+            this.Monitor.Log($"Value for isSameDayOfWeek: {isSameDayOfWeek}", LogLevel.Alert);
 
             string jsonString = File.ReadAllText(Path.Combine(this.Filepath, "DailyPlanner", this.Filename)); 
 

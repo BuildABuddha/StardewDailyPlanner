@@ -59,7 +59,7 @@ namespace DailyPlanner.Framework
         private readonly PlusMinusComponent DailySeasonPlusMinus;
         private readonly PlusMinusComponent WeeklySeasonPlusMinus;
         private readonly PlusMinusComponent WeeklyDayOfWeekPlusMinus;
-        private readonly PlusMinusComponent RemoveTaskSeasonSlider;
+        private readonly PlusMinusComponent RemoveTaskSeasonPlusMinus;
         private readonly PlusMinusComponent RemoveTaskDayPlusMinus;
 
         /*********
@@ -114,7 +114,7 @@ namespace DailyPlanner.Framework
             this.DailySeasonPlusMinus = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
             this.WeeklySeasonPlusMinus = new(SeasonListWithAllYear, i18n.Get("slider.season"), this);
             this.WeeklyDayOfWeekPlusMinus = new(WeekdayList, i18n.Get("slider.week"), this);
-            this.RemoveTaskSeasonSlider = new(SeasonList, i18n.Get("slider.season"), this);
+            this.RemoveTaskSeasonPlusMinus = new(SeasonList, i18n.Get("slider.season"), this);
             this.RemoveTaskDayPlusMinus = new(1, 28, i18n.Get("slider.day"), this);
 
             {
@@ -235,7 +235,7 @@ namespace DailyPlanner.Framework
                     this.Options.Add(new TextBoxComponent(TaskType.Weekly, slotWidth, this));
                     break;
                 case MenuTab.Remove:
-                    this.Options.Add(RemoveTaskSeasonSlider);
+                    this.Options.Add(RemoveTaskSeasonPlusMinus);
                     this.Options.Add(RemoveTaskDayPlusMinus);
                     this.RefreshRemoveTaskTab();
                     break;
@@ -275,24 +275,30 @@ namespace DailyPlanner.Framework
             {
                 if (this.Options.Count > 2) this.Options.RemoveRange(2, this.Options.Count - 2);
                 int slotWidth = this.OptionSlots[0].bounds.Width;
-                int season = this.RemoveTaskSeasonSlider.GetOutputInt() + 1;
+                int season = this.RemoveTaskSeasonPlusMinus.GetOutputInt() + 1;
                 int day = this.RemoveTaskDayPlusMinus.GetOutputInt();
+                
+                // All year - daily tasks
                 foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, TaskType.Daily, day))
                 {
                     this.Options.Add(new RemoveTaskComponent(TaskType.Daily, day, line, slotWidth, this.Planner, this));
                 }
+                // All year - weekly tasks
                 foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(0, TaskType.Weekly, day))
                 {
                     this.Options.Add(new RemoveTaskComponent(TaskType.Weekly, day, line, slotWidth, this.Planner, this));
                 }
+                // Current season - daily tasks
                 foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, TaskType.Daily, day))
                 {
                     this.Options.Add(new RemoveTaskComponent(TaskType.Daily, season, day, line, slotWidth, this.Planner, this));
                 }
+                // Current season - weekly tasks
                 foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, TaskType.Weekly, day))
                 {
-                    this.Options.Add(new RemoveTaskComponent(TaskType.Weekly, day, season, line, slotWidth, this.Planner, this));
+                    this.Options.Add(new RemoveTaskComponent(TaskType.Weekly, season, day, line, slotWidth, this.Planner, this));
                 }
+                // Current season - on date tasks
                 foreach (string line in this.Planner.GetTasksBySeasonTypeAndDate(season, TaskType.OnDate, day))
                 {
                     this.Options.Add(new RemoveTaskComponent(TaskType.OnDate, season, day, line, slotWidth, this.Planner, this));
@@ -595,6 +601,10 @@ namespace DailyPlanner.Framework
             if (!Enum.TryParse(tab.name, out MenuTab tabID))
                 throw new InvalidOperationException($"Couldn't parse tab name '{tab.name}'.");
             return tabID;
+        }
+        public override bool overrideSnappyMenuCursorMovementBan()
+        {
+            return true;
         }
 
         public static void DrawTextBox(int x, int y, SpriteFont font, string message, int align = 0, float colorIntensity = 1F)
