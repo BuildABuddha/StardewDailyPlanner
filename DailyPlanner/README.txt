@@ -41,14 +41,14 @@ Checklist.txt is the easiest to edit yourself, feel free to type in a big long l
 The .json files are a little harder to edit, but you can easily copy a previous year and save it as 'year_2.json' or something similar like that.
 
 Upcoming features:
-1) Support for To-Dew mod (so To-Dew and Daily Planner doesn't fight over HUD space, and perhaps even share resources)
-2) Multiplayer support (I need somoene to help me test this)
+* Support for To-Dew mod (so To-Dew and Daily Planner doesn't fight over HUD space, and perhaps even share resources)
+* Multiplayer support (I need somoene to help me test this)
+* Possible further mobile phone support, with an actual app that shows tasks on your phone screen? Might be a good alternative to the hud overlay.
 
 Known issues: 
-1) The text boxes on the "Add Task" tab are kind of glitchy, sometimes it's hard to de-select them. Pressing 'Esc' or 'Enter' de-selects them for you.
-2) Really long task names can trail off the right side of the menu. A fix for that will come eventually.
-3) Text in the Generic Mod Config Menu is not translated with i18n yet.
-4) The overlay hides your floor number while you're in the mines. 
+* Due to needing to be able to save in a local save directory, the mod is disabled if you're a farmhand in a multiplayer game. Multiplayer support will be added later.
+* Long text can trail off the right side of the planner menu.
+* Issue with the scroll bar when scrolled all the way down then removing a task. 
 
 Credits:
 * ConcernedApe for making Stardew Valley in the first place
@@ -56,6 +56,7 @@ Credits:
 * CJBok for their work on the Cheat Menu Mod, which I ripped off to make the GUI for this mod.
 * spacechase0 for Generic Mod Config Menu
 * jltaylor1 for the To-Dew mod, which filled the void left by my mod while it was broken for years, lol
+* aedenthorn for the Mobile Phone mod
 
 Contacts:
 Discord - MevNav#0660
