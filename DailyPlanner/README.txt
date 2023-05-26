@@ -1,13 +1,8 @@
 ﻿#### MevNav's Daily Planner Mod ####
 
-Current version: 1.2.0
-Last Update: May 24th, 2023
-* Several UI Overhauls. Sliders replaced with +/- buttons and "Set" buttons replaced with "Done" buttons on daily plan and checklist.
-* Several overlay settings added, including moving its position and displaying checklist items. You can find them in the Mod Config menu.
-* Checklist now has a way to add tasks to it in-game rather than having to edit a .txt file. You can still edit that .txt if you want to, though.
-* Plans and checklist are now saved in your save game directory, which allows for unique plans for different save games.
-* Minor controller support. Left thumb stick now controls your cursor in the menu. Optional controller button in Mod Config menu.
-* Basic support for Mobile Phone mod. The "Daily Planner" app, for now, just boots straight into the planner menu, making it a good alternative to a hotkey.
+Current version: 1.2.1
+Last Update: May 26th, 2023
+* Fixed crash related to opening checklist menu on new saves.
 
 
 How to install this mod:

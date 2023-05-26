@@ -187,7 +187,7 @@ namespace DailyPlanner.Framework
                 case MenuTab.Daily:
                     string label = this.Planner.DayToString(StardewModdingAPI.Utilities.SDate.Now().SeasonIndex + 1, StardewModdingAPI.Utilities.SDate.Now().Day) + ":";
                     this.Options.Add(new OptionsElement(label));
-                    foreach (string task in this.Planner.GetDailyPlan())
+                    foreach (string task in this.Planner?.GetDailyPlan())
                     {
                         this.Options.Add(new PlannerListComponent(task, slotWidth, this.Planner, this));
                     }
@@ -195,7 +195,7 @@ namespace DailyPlanner.Framework
 
                 case MenuTab.Checklist:
                     this.Options.Add(new TextBoxComponent(TaskType.Checklist, slotWidth, this));
-                    foreach (string task in this.CheckList.GetCheckListItems())
+                    foreach (string task in this.CheckList?.GetCheckListItems())
                     {
                         this.Options.Add(new PlannerListComponent(task, slotWidth, this.CheckList, this));
                     }

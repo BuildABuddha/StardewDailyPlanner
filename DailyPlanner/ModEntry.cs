@@ -61,8 +61,7 @@ namespace DailyPlanner
             // Open window if button is tab button
             if ((e.Button == this.Config.OpenMenuKey || e.Button == this.Config.SecondaryControllerKey) & (Context.IsWorldReady))
             {
-                Game1.activeClickableMenu = new PlannerMenu(this.Config.DefaultTab, this.Config, this.Planner, this.CheckList, this.Helper.Translation, this.Monitor);
-                Game1.soundBank.PlayCue("bigSelect");
+                this.OpenMenu();
             }
                 
         }
@@ -70,6 +69,7 @@ namespace DailyPlanner
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             this.Overlay = new PlannerOverlay(this, this.Config);
+            this.CheckList = new();
         }
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
@@ -96,6 +96,12 @@ namespace DailyPlanner
                 && Game1.farmEvent == null 
                 && !Game1.game1.takingMapScreenshot
                 ) this.Overlay?.Draw(e.SpriteBatch);
+        }
+
+        private void OpenMenu()
+        {
+            Game1.activeClickableMenu = new PlannerMenu(this.Config.DefaultTab, this.Config, this.Planner, this.CheckList, this.Helper.Translation, this.Monitor);
+            Game1.soundBank.PlayCue("bigSelect");
         }
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
@@ -224,10 +230,7 @@ namespace DailyPlanner
             {
                 Texture2D appIcon = this.Helper.ModContent.Load<Texture2D>(Path.Combine(this.Helper.DirectoryPath, "assets", "app-icon.png"));
 
-                phoneApi.AddApp(Helper.ModRegistry.ModID, "Daily Planner", () => {
-                    Game1.activeClickableMenu = new PlannerMenu(this.Config.DefaultTab, this.Config, this.Planner, this.CheckList, this.Helper.Translation, this.Monitor);
-                    Game1.soundBank.PlayCue("bigSelect");
-                }, appIcon);
+                phoneApi.AddApp(Helper.ModRegistry.ModID, "Daily Planner", () => this.OpenMenu(), appIcon);
             }
         }
     }
