@@ -1,0 +1,74 @@
+{
+  // menu title
+  "title": "Меню Daily Planner",
+
+  // menu tabs
+  "tabs.daily": "День",
+  "tabs.checklist": "Контрольный список",
+  "tabs.weekly": "Неделя",
+  "tabs.monthly": "Месяц",
+  "tabs.add": "Добавить задачу",
+  "tabs.remove": "Удалить задачу",
+
+  // season names
+  "seasons.spring": "Весна",
+  "seasons.summer": "Лето",
+  "seasons.fall": "Осень",
+  "seasons.winter": "Зима",
+  "seasons.all_year": "Весь год",
+
+  // weekday names
+  "week.monday": "Понедельник",
+  "week.tuesday": "Вторник",
+  "week.wednesday": "Среда",
+  "week.thursday": "Четверг",
+  "week.friday": "Пятница",
+  "week.saturday": "Суббота",
+  "week.sunday": "Воскресенье",
+
+  // word for year
+  "year.year": "Год",
+
+  // slider labels
+  "slider.season": "Сезон",
+  "slider.week": "День недели",
+  "slider.day": "День",
+
+  // task types
+  "task.daily": "Ежедневный",
+  "task.weekly": "Еженедельно",
+  "task.on_date": "На дату",
+
+  // instructions
+  "instructions.add_one_day": "Добавить задачу на определенную дату:",
+  "instructions.add_daily": "Добавить ежедневное задание:",
+  "instructions.add_weekly": "Добавить еженедельное задание:",
+
+  // overlay
+  "overlay.planner": "Планировщик:",
+  "overlay.checklist": "Контрольный список:",
+
+  // mod config text
+  "config.keybind.name": "Клавиша открытия меню",
+  "config.keybind.tooltip": "Кнопка для открытия меню Ежедневника",
+  "config.controller_button.name": "Кнопка открытия меню на контроллере",
+  "config.controller_button.tooltip": "Кнопка на контроллере для открытия меню Daily Planner",
+  "config.overlay_toggle.name": "Показать оверлей",
+  "config.overlay_toggle.tooltip": "Включение/выключение HUD оверлей",
+  "config.show_planner_tasks.name": "Задачи планировщика в оверлей",
+  "config.show_planner_tasks.tooltip": "Включение/выключение запланированных задач на оверлее",
+  "config.show_checklist_tasks.name": "Задачи контрольного списка на оверлее",
+  "config.show_checklist_tasks.tooltip": "Включение/выключение задач контрольного списка на оверлее",
+  "config.background_opacity.name": "Непрозрачность фона оверлея",
+  "config.background_opacity.tooltip": "Степень прозрачности заднего фона в оверлее",
+  "config.text_opacity.name": "Непрозрачность текста оверлея",
+  "config.text_opacity.tooltip": "Степень прозрачности текста в оверлее",
+  "config.max_lines.name": "Максимальное количество строк оверлея",
+  "config.max_lines.tooltip": "Максимальное количество строк текста в оверлее",
+  "config.max_line_length.name": "Максимальная длина текста оверлея",
+  "config.max_line_length.tooltip": "Максимальная длина текста в оверлея",
+  "config.x_position.name": "Позиция оверлея по X %",
+  "config.x_position.tooltip": "Перемещает оверлей влево/вправо",
+  "config.y_position.name": "Позиция оверлея по Y %",
+  "config.y_position.tooltip": "Перемещает оверлей вверх/вниз"
+}
